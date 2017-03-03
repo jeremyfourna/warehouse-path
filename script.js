@@ -123,13 +123,13 @@ function removeWalls(nodeList, lineIndexToRemove) {
 	}
 }
 
-function highlightPath(nodeList, path) {
+function highlightPath(nodeList, path, classToAdd) {
 	path.map(function(cur) {
 		for (let i = 0; i < nodeList.length; i++) {
 			if (i === cur[1]) {
 				for (let j = 0; j < nodeList[i].children.length; j++) {
 					if (j === cur[0]) {
-						nodeList[i].children[j].className = "path";
+						nodeList[i].children[j].className = classToAdd;
 					}
 				}
 			}
@@ -161,6 +161,10 @@ matrixPickerTour.map(function(cur, index, array) {
 		return;
 	} else {
 		let path = finder.findPath(cur[0], cur[1], array[index + 1][0], array[index + 1][1], grid);
-		return highlightPath(nodeMatrix, path);
+		if (index % 2 === 0) {
+			return highlightPath(nodeMatrix, path, "path");
+		} else {
+			return highlightPath(nodeMatrix, path, "path2");
+		}
 	}
 });
