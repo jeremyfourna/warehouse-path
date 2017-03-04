@@ -1,4 +1,5 @@
-function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSeparation) {
+// drawWarehouseAndPickerTour :: Number -> Number -> Number -> Array -> WarehouseAndPickerTour
+function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSeparation, pickerTour) {
 	// mapPickerTourLocationsToMatrixData :: String -> [Number, Number]
 	function mapPickerTourLocationsToMatrixData(location) {
 		var val = location.slice(4, 11);
@@ -15,9 +16,9 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 		return [xAxis, yAxis];
 	}
 
-	// Walkability matrix. Zero is walkable, One is not
 	// createWarehouseMatrix :: Number -> Number -> Number -> Number -> Array -> Array
 	function createWarehouseMatrix(startHeight, startWidth, separation, height = 0, width = 0, matrix = []) {
+		// Walkability matrix. Zero is walkable, One is not
 		if (height >= startHeight) {
 			matrix.push(Array(startWidth).fill(0));
 			return matrix;
@@ -104,6 +105,7 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 		}
 	}
 
+	// removeWalls :: NodeList -> Number -> NodeList
 	function removeWalls(nodeList, separation) {
 		for (let i = 0; i < nodeList.length; i++) {
 			if (i === separation) {
@@ -112,10 +114,13 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 				}
 			}
 		}
+		return nodeList;
 	}
 
+	// highlightPath :: NodeList -> Array -> NodeList
 	function highlightPath(nodeList, path) {
 
+		// addClassOnNode :: Number -> String
 		function addClassOnNode(nbOfClass) {
 			return ` path${nbOfClass}`;
 		}
@@ -138,18 +143,11 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 				}
 			}
 		});
+
+		return nodeList;
 	}
 
-	function getRandomColor() {
-		const letters = '0123456789ABCDEF';
-		let color = '#';
-		for (var i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	}
-
-
+	// drawPickerTour :: Array -> Array -> Array
 	function drawPickerTour(matrix, pickerTour) {
 		return pickerTour.map(mapPickerTourLocationsToMatrixData)
 			.map(function(cur, index, array) {
@@ -168,12 +166,12 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 	$("body").append(addDiv(matrix));
 	const nodeMatrix = $$('.row');
 	removeWalls(nodeMatrix, warehouseSeparation);
-	drawPickerTour(matrix, realPickerTour);
 
+	return drawPickerTour(matrix, pickerTour);
 }
 
 const pickerTour = ["MZ1-0103A01", "MZ1-0305D05", "MZ1-0515D05"];
 const pickerTour1 = ["MZ1-0706D05", "MZ1-3136A01", "MZ1-3328A02", "MZ1-0103A01"];
 const realPickerTour = ["MZ1-3129A03", "MZ1-3136D06", "MZ1-3137D05", "MZ1-3137D05", "MZ1-3137D05", "MZ1-3331A01", "MZ1-3331A01", "MZ1-3415D03", "MZ1-0103A01", "MZ1-0305D05", "MZ1-0306D05", "MZ1-0306D05", "MZ1-0314A02", "MZ1-0412D06", "MZ1-0414D02", "MZ1-0723D03", "MZ1-1215D06", "MZ1-1241D03", "MZ1-2504A01", "MZ1-2934A02", "MZ1-3227D05", "MZ1-3339A02", "MZ1-0525A01", "MZ1-0535D06", "MZ1-0923D02", "MZ1-0923D02", "MZ1-0923D02", "MZ1-1908D05", "MZ1-1909D01", "MZ1-1909D06", "MZ1-2524A02", "MZ1-2530A02", "MZ1-2703A03", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2814D01", "MZ1-2820D04", "MZ1-3025D06", "MZ1-3028D03", "MZ1-3103A02", "MZ1-3106A01", "MZ1-3106A01", "MZ1-3107A03", "MZ1-3109A01", "MZ1-3110A03", "MZ1-3110A03", "MZ1-3111A01", "MZ1-3111A01", "MZ1-3111A02", "MZ1-3111A02", "MZ1-3111A02", "MZ1-3111A03", "MZ1-3111A03", "MZ1-3112A03", "MZ1-3112A03", "MZ1-3112A03", "MZ1-3113A01", "MZ1-3115A02", "MZ1-3115A02", "MZ1-3116A02", "MZ1-3117A02", "MZ1-3117A02", "MZ1-3118A01", "MZ1-3118A01", "MZ1-3118A01", "MZ1-3119A03", "MZ1-3136D05", "MZ1-3204D05", "MZ1-3208D03", "MZ1-3208D03", "MZ1-3208D03", "MZ1-3208D04", "MZ1-3303A02", "MZ1-3305A03", "MZ1-3328A02", "MZ1-3328A02", "MZ1-3332A03", "MZ1-3333A02"];
 
-drawWarehouseAndPickerTour(44, 36, 10)
+drawWarehouseAndPickerTour(44, 36, 10, realPickerTour);
