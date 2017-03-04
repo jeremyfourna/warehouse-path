@@ -113,17 +113,23 @@ function removeWalls(nodeList, lineIndexToRemove) {
 	}
 }
 
-function highlightPath(nodeList, path, color) {
+function highlightPath(nodeList, path) {
+
+	function addClassOnNode(nbOfClass) {
+		return ` path${nbOfClass}`;
+	}
+
 	path.map(function(cur, index, array) {
 		for (let i = 0; i < nodeList.length; i++) {
 			if (i === cur[1]) {
 				for (let j = 0; j < nodeList[i].children.length; j++) {
 					if (j === cur[0]) {
+						let node = nodeList[i].children[j];
 						if (index === 0 || index === array.length - 1) {
 							nodeList[i].children[j].textContent = "*";
-							nodeList[i].children[j].style.background = getRandomColor();
+							node.className = 'location';
 						} else {
-							nodeList[i].children[j].style.background = color;
+							node.className += addClassOnNode(node.classList.length);
 						}
 						break;
 					}
@@ -148,7 +154,7 @@ function drawPickerTour(pickerTour) {
 		.map(function(cur, index, array) {
 			if (index !== array.length - 1) {
 				let path = finder.findPath(cur[0], cur[1], array[index + 1][0], array[index + 1][1], grid);
-				return highlightPath(nodeMatrix, path, getRandomColor());
+				return highlightPath(nodeMatrix, path);
 			}
 		});
 }
@@ -168,5 +174,5 @@ var nodeMatrix = $$('.row');
 
 removeWalls(nodeMatrix, 10);
 
-drawPickerTour(pickerTour);
 drawPickerTour(pickerTour1);
+//drawPickerTour(pickerTour1);
