@@ -170,8 +170,27 @@ function drawWarehouseAndPickerTour(warehouseHeight, warehouseWidth, warehouseSe
 	return drawPickerTour(matrix, pickerTour);
 }
 
+// pickerTourInSequence :: Array -> Number -> Array
+function pickerTourInSequence(pickerTour, nbLocations = 2) {
+	if (nbLocations >= pickerTour.length) {
+		return pickerTour;
+	} else {
+		const newPickerTour = pickerTour.slice(0, nbLocations);
+		return newPickerTour;
+	}
+}
+
 const pickerTour = ["MZ1-0103A01", "MZ1-0305D05", "MZ1-0515D05"];
 const pickerTour1 = ["MZ1-0706D05", "MZ1-3136A01", "MZ1-3328A02", "MZ1-0103A01"];
 const realPickerTour = ["MZ1-3129A03", "MZ1-3136D06", "MZ1-3137D05", "MZ1-3137D05", "MZ1-3137D05", "MZ1-3331A01", "MZ1-3331A01", "MZ1-3415D03", "MZ1-0103A01", "MZ1-0305D05", "MZ1-0306D05", "MZ1-0306D05", "MZ1-0314A02", "MZ1-0412D06", "MZ1-0414D02", "MZ1-0723D03", "MZ1-1215D06", "MZ1-1241D03", "MZ1-2504A01", "MZ1-2934A02", "MZ1-3227D05", "MZ1-3339A02", "MZ1-0525A01", "MZ1-0535D06", "MZ1-0923D02", "MZ1-0923D02", "MZ1-0923D02", "MZ1-1908D05", "MZ1-1909D01", "MZ1-1909D06", "MZ1-2524A02", "MZ1-2530A02", "MZ1-2703A03", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2715A01", "MZ1-2814D01", "MZ1-2820D04", "MZ1-3025D06", "MZ1-3028D03", "MZ1-3103A02", "MZ1-3106A01", "MZ1-3106A01", "MZ1-3107A03", "MZ1-3109A01", "MZ1-3110A03", "MZ1-3110A03", "MZ1-3111A01", "MZ1-3111A01", "MZ1-3111A02", "MZ1-3111A02", "MZ1-3111A02", "MZ1-3111A03", "MZ1-3111A03", "MZ1-3112A03", "MZ1-3112A03", "MZ1-3112A03", "MZ1-3113A01", "MZ1-3115A02", "MZ1-3115A02", "MZ1-3116A02", "MZ1-3117A02", "MZ1-3117A02", "MZ1-3118A01", "MZ1-3118A01", "MZ1-3118A01", "MZ1-3119A03", "MZ1-3136D05", "MZ1-3204D05", "MZ1-3208D03", "MZ1-3208D03", "MZ1-3208D03", "MZ1-3208D04", "MZ1-3303A02", "MZ1-3305A03", "MZ1-3328A02", "MZ1-3328A02", "MZ1-3332A03", "MZ1-3333A02"];
 
-drawWarehouseAndPickerTour(44, 36, 10, realPickerTour);
+
+// init
+drawWarehouseAndPickerTour(44, 36, 10, pickerTourInSequence(realPickerTour, 2));
+
+$('#drawNextLocation').on('click', function() {
+	$('.row').remove();
+	const nbLocations = Number($(this).attr('data-nblocations'));
+	$(this).attr('data-nblocations', nbLocations + 1);
+	return drawWarehouseAndPickerTour(44, 36, 10, pickerTourInSequence(realPickerTour, nbLocations));
+});
