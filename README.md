@@ -2,6 +2,20 @@
 
 Show the picker path in a warehouse based on the warehouse configuration
 
+## Structure
+
+### script.js
+
+This your file where you create your warehouse, your picker tour and all the stuff you want to try...
+
+### pickerTour.js
+
+This file contains all the functions used to draw or calculate the tour of a picker in a warehouse
+
+### warehouseDisplay.js
+
+This file contains all the functions used to draw or create a warehouse with the configuration you wish
+
 ## Reading list and useful websites
 
 * https://simple.wikipedia.org/wiki/Travelling_salesman_problem

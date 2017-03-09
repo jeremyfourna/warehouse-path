@@ -7,11 +7,11 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 	// addDiv :: Array -> String -> String
 	function addDiv(list, openString = `<div class="${classForRow}">`) {
 		// addDivEl :: String -> String
-		function addDivEl(string, className) {
+		function addDivEl(string, className, style) {
 			if (className === 0) {
-				return string + "<div></div>";
+				return string + `<div style="${style}"></div>`;
 			} else {
-				return string + '<div class="wall"></div>';
+				return string + `<div class="wall" style="${style}"></div>`;
 			}
 		}
 
@@ -30,7 +30,7 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 			return openString;
 		} else if (list.length === 1) { // list === [a] || list === [[]] || list === [[a]]
 			if (list[0].length === undefined) { // list === [a]
-				openString = addDivEl(openString, list[0]);
+				openString = addDivEl(openString, list[0], style);
 				return addDiv([], openString);
 			} else { // list === [[]] || list === [[a]]
 				openString = addDiv(list[0], openString);
@@ -40,7 +40,7 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 			}
 		} else { // list === [a, a] || list === [[], []]
 			if (list[0].length === undefined) { // list === [a, a]
-				openString = addDivEl(openString, list[0]);
+				openString = addDivEl(openString, list[0], style);
 				let newList = list.slice(1);
 				return addDiv(newList, openString);
 			} else { // list === [[], []]
@@ -51,7 +51,7 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 			}
 		}
 	}
-
+	const style = "width: 15px;height: 15px;display: inline-block;border: 0.5px solid black;";
 	$(tagToAppendTheWarehouse).append(addDiv(matrix));
 	const nodeMatrix = $$(`.${classForRow}`);
 	// Step 3 : Return the matrix

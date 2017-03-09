@@ -1,11 +1,3 @@
-  .row > div,
-  .superRow > div {
-      width: 15px;
-      height: 15px;
-      display: inline-block;
-      border: 0.5px solid black;
-  }
-  
   .wall {
       background: grey;
   }
