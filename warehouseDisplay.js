@@ -1,4 +1,4 @@
-// drawWarehouse :: [Array] -> Nodelist
+// drawWarehouse :: warehouseMatrix -> DOM element -> String -> Nodelist
 function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "row") {
 	// Check parameters
 	if (typeof tagToAppendTheWarehouse !== "string") {
@@ -58,7 +58,7 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 	return nodeMatrix;
 }
 
-// drawWarehouse :: Number -> Number -> [Number] -> [Array]
+// createWarehouseMatrix :: Number -> Number -> [Number] -> [Array]
 function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, listOfSeparation) {
 	// createMatrix :: Number -> Number -> [Number] -> Number -> Number -> Array -> [Array]
 	function createMatrix(startHeight, startWidth, listOfSeparation, height = 0, width = 0, matrix = []) {
