@@ -2,21 +2,100 @@
 
 Show the picker path in a warehouse based on the warehouse configuration
 
-## Structure
+## Algos folder
 
-### script.js
+In this folder you can find all the related algorithms used by this repo
+
+### closestLocations.js
+
+This file contains 1 function **shortestPathBetweenLocations**. This function will reorder the picker tour by finding the closest location at each round when the picker will go to another location.
+
+_For the record, this is a really dumb algo, but still work better thant the S-Shaped form._
+
+### sShapedLocations.js
+
+This file contains 2 function **sShapedLocationAsc** and **sShapedLocationDesc**. This function will reorder the picker tour by ascending or descending way. Like this the picker will go to the next location in name order.
+
+## script.js
 
 This your file where you create your warehouse, your picker tour and all the stuff you want to try...
 
-### pickerTour.js
+## pickerTour.js
 
-This file contains all the functions used to draw or calculate the tour of a picker in a warehouse
+This file contains all the functions used to draw or calculate the tour of a picker in a warehouse.
 
-### warehouseDisplay.js
+### locationsListToMatrixData
 
-This file contains all the functions used to draw or create a warehouse with the configuration you wish
+`locationsListToMatrixData :: [String] -> Function -> Function`
 
-## Reading list and useful websites
+This function will transform your list of locations to `x` and `y` coordinates for the matrix. It will do so via the `Function` passed as argument.
+
+### locationToMatrixData
+
+`locationToMatrixData :: String -> Function -> Function`
+
+This function is the sister of `locationsListToMatrixData` in a sense that this one will transform in coordinates 1 location. In the implementation of `locationsListToMatrixData` we use `locationToMatrixData` to do the work on a single location.
+
+### uniqLocations
+
+`uniqLocations :: [String] -> [String]`
+
+This function will take a locations list and return a new list with all the distinct locations from the original one. It uses `_.uniq` to do the work.
+
+### uniqMatrixLocations
+
+`uniqMatrixLocations :: [Array] -> [Array]`
+
+This function is the cousin of `uniqLocations` in a sense that is will do the same job but will work with matrix coordinates. It uses `_.uniqBy` and `_.isEqual` to do the work.
+
+## warehouseDisplay.js
+
+This file contains all the functions used to draw or create a warehouse with the configuration you wish.
+
+### drawWarehouse
+
+`drawWarehouse :: warehouseMatrix -> DOM element -> String -> Nodelist`
+
+This function will create in the `DOM element` provided the warehouse based on the `warehouseMatrix`. You can find the warehouse by the `String` passed that will be added has `class` for all the rows.
+
+#### Examples
+
+```js
+// 0 is walkable ; 1 is a wall
+const warehouseMatrix = [
+		[0, 0, 0, 0, 0],
+		[0, 0, 1, 0, 0],
+		[0, 0, 1, 0, 0],
+		[0, 0, 0, 0, 0]
+	];
+
+drawWarehouse(warehouseMatrix, "body", "row");
+```
+
+### createWarehouseMatrix
+
+`createWarehouseMatrix :: Number -> Number -> [Number] -> [Array]`
+
+This function will create a matrix based on the configuration provided.
+
+#### Examples
+
+```js
+// 0 is walkable ; 1 is a wall
+const warehouseHeight = 12; // Number of racks in an aisle
+const warehouseWidth = 6; // Number of aisles in a warehouse
+const warehouseSeparation = [2, 4] // 0 index based
+
+createWarehouseMatrix(warehouseHeight, warehouseWidth, warehouseSeparation);
+```
+
+This will render into the `DOM` with the help of `drawWarehouse`.
+
+![alt text](public/simple_warehouse_config.PNG "Simple warehouse configuration")
+
+The first and last row will always be walkable.
+
+# Reading list and useful websites
 
 * https://simple.wikipedia.org/wiki/Travelling_salesman_problem
 * https://simple.wikipedia.org/wiki/Monte_Carlo_algorithm
