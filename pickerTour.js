@@ -153,7 +153,7 @@ function nbStepsForAPickerTour(pickerTour) {
 // testAlgoOnManyBatchesReduce :: [Array] -> [Array] -> String -> Number
 function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea) {
 	return listOfBatches.reduce(function(prev, cur, index) {
-		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 
@@ -174,7 +174,7 @@ function testAlgoOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, nbLoca
 		let nodeMatrix = drawWarehouse(matrix, "body", `row${index}`);
 		let nodeMatrix1 = drawWarehouse(matrix, "body", `superRow${index}`);
 
-		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 
@@ -190,7 +190,7 @@ function testAlgoOnManyBatchesResult(matrix, listOfBatches, sortingArea, tagToAp
 	let results = [];
 	listOfBatches.map(function(cur, index) {
 		let resultForABatch = {};
-		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 
