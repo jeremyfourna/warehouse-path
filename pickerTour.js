@@ -43,7 +43,6 @@ function highlightPathBetweenTwoLocations(nodeList, path) {
 		}
 	});
 }
-let newLocationsList = locationsList.slice(0);
 
 // startAndEndAtSameALocation :: String -> [String] -> [String]
 function startAndEndAtSameALocation(location, locationsList) {
@@ -59,6 +58,7 @@ function startFromALocation(startingLocation, locationsList) {
 
 // endAtALocation :: String -> [String] -> [String]
 function endAtALocation(endingLocation, locationsList) {
+	let newLocationsList = locationsList.slice(0);
 	newLocationsList.push(endingLocation);
 	return newLocationsList;
 }

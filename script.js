@@ -35,8 +35,8 @@ $('#drawNextLocation').on('click', function() {
 });
 
 //console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea));
-testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
-//testAlgoOnManyBatchesResult(matrix, parseBigDataBatches(bigData), sortingArea);
+//testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
+testAlgoOnManyBatchesResult(matrix, parseBigDataBatches(bigData), sortingArea);
 
 
 // parseBigDataBatches :: [String] -> [Array]
