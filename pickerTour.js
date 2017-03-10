@@ -143,50 +143,68 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
 	};
 }
 
-// shortestPathBetweenLocations :: Object -> String -> [String]
-function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, startingPoint, functionToApply) {
-	let visitedLocations = [];
-	let startingPointInMatrix = matrixWithShortestPathBetweenLocations.ref.find(function(cur) {
-		return cur.name === startingPoint;
-	});
-	if (startingPointInMatrix === undefined) {
-		return [];
-	} else {
-		visitedLocations.push(startingPointInMatrix);
-	}
-	return functionToApply(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations);
-}
-
-// findClosestLocation :: matrixWithShortestPathBetweenLocations -> Object -> [Object]
-function findClosestLocation(matrixWithShortestPathBetweenLocations, currentPosition, visitedLocations) {
-	let sortingDistance = matrixWithShortestPathBetweenLocations.matrix[currentPosition.indexInMatrix];
-	let closestLocation = undefined;
-	sortingDistance.sort(function(a, b) {
-		if (a.pathLength < b.pathLength) {
-			return -1;
-		} else if (a.pathLength > b.pathLength) {
-			return 1;
-		} else {
-			return 0;
-		}
-	});
-	let notInVisitedLocations = _.differenceBy(sortingDistance, visitedLocations, "name");
-	closestLocation = matrixWithShortestPathBetweenLocations.ref.find(function(cur) {
-		return cur.name === notInVisitedLocations[0].name;
-	});
-	visitedLocations.push(closestLocation);
-	if (visitedLocations.length !== matrixWithShortestPathBetweenLocations.ref.length) {
-		return findClosestLocation(matrixWithShortestPathBetweenLocations, closestLocation, visitedLocations);
-	} else {
-		return visitedLocations.map(function(cur) {
-			return cur.name;
-		});
-	}
-}
-
 // nbStepsForAPickerTour :: [Array] -> Number
 function nbStepsForAPickerTour(pickerTour) {
 	return pickerTour.reduce(function(prev, cur) {
 		return prev + cur.length;
 	}, 0);
+}
+
+// testAlgoOnManyBatchesReduce :: [Array] -> [Array] -> String -> Number
+function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea) {
+	return listOfBatches.reduce(function(prev, cur, index) {
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
+		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
+
+		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
+		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
+		console.log(`Result ${index} : `, shortest - sShaped, "nbStepsForAPickerTour sShaped", sShaped, "nbStepsForAPickerTour shortest", shortest, "gain", _.round((shortest - sShaped) / sShaped * 100, 2), "%");
+		return prev + (shortest - sShaped);
+	}, 0);
+}
+
+// testAlgoOnManyBatchesDisplay :: [Array] -> [Array] -> String -> Number -> Boolean -> Nodelist
+function testAlgoOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, nbLocations = 1, cleanUp = false) {
+	return listOfBatches.map(function(cur, index) {
+		if (cleanUp === true) {
+			$(`.row${index}`).remove();
+			$(`.superRow${index}`).remove();
+		}
+		let nodeMatrix = drawWarehouse(matrix, "body", `row${index}`);
+		let nodeMatrix1 = drawWarehouse(matrix, "body", `superRow${index}`);
+
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
+		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
+
+		// S-Shaped
+		highlightPathBetweenManyLocations(nodeMatrix, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)), nbLocations));
+		// Shortest path
+		highlightPathBetweenManyLocations(nodeMatrix1, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)), nbLocations));
+	});
+}
+
+// testAlgoOnManyBatchesResult :: [Array] -> [Array] -> String -> [Object]
+function testAlgoOnManyBatchesResult(matrix, listOfBatches, sortingArea, tagToAppendResults = "body") {
+	let results = [];
+	listOfBatches.map(function(cur, index) {
+		let resultForABatch = {};
+		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocation(uniqLocations(cur)));
+		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
+		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
+
+		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
+		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
+
+		resultForABatch.pickerTourLength = pickerTour.length;
+		resultForABatch.sShapedSteps = sShaped;
+		resultForABatch.shortestSteps = shortest;
+		resultForABatch.diff = shortest - sShaped;
+		resultForABatch.gain = _.round((shortest - sShaped) / sShaped * 100, 2);
+		return results.push(resultForABatch);
+	});
+	let str = JSON.stringify(results, null, 4);
+
+	return $(tagToAppendResults).append(`<code>${str}</code>`);
 }
