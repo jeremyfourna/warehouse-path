@@ -2,6 +2,13 @@
 
 Show the picker path in a warehouse based on the warehouse configuration
 
+### Table of content
+[Algo folder](#algos-folder)<br>
+[script.js](#scriptjs)<br>
+[pickerTour.js](#pickertourjs)<br>
+[warehouseDisplay.js](#warehousedisplayjs)<br>
+[Reading list and useful websites](#reading-list-and-useful-websites)
+
 ## Algos folder
 
 In this folder you can find all the related algorithms used by this repo
@@ -47,6 +54,48 @@ This function will take a locations list and return a new list with all the dist
 `uniqMatrixLocations :: [Array] -> [Array]`
 
 This function is the cousin of `uniqLocations` in a sense that is will do the same job but will work with matrix coordinates. It uses `_.uniqBy` and `_.isEqual` to do the work.
+
+### highlightPathBetweenManyLocations
+
+`highlightPathBetweenManyLocations :: NodeList -> [Array] -> [Array]`
+
+This function will map against the many locations to draw the picker path in the `DOM`. It use the function `highlightPathBetweenTwoLocations` to do the work.
+
+### highlightPathBetweenTwoLocations
+
+`highlightPathBetweenTwoLocations :: NodeList -> [Array] -> [Array]`
+
+This function will that the path between 2 locations and `DOM elements = NodeList` to change the `class` linked to the nodes that the picker will take.
+
+### startAndEndAtSameALocation
+
+`startAndEndAtSameALocation :: String -> [String] -> [String]`
+
+This function uses `startFromALocation` and `endAtALocation` to improve the picker tour list to start and end at the same point. This is useful want the picker finish a previous tour and want to begin a new one.
+
+### startFromALocation
+
+`startFromALocation :: String -> [String] -> [String]`
+
+Use this function when your picker tour doesn't include at first the starting point (eg: the sorting area or packing area). This might be a point that is on the border of the warehouse. The function will return the picker tour list plus the starting location at the beginning of the list.
+
+### endAtALocation
+
+`endAtALocation :: String -> [String] -> [String]`
+
+Use this function when your picker tour doesn't include at first the ending point (eg: the sorting area or packing area). This might be a point that is on the border of the warehouse. The function will return the picker tour list plus the ending location at the end of the list.
+
+### createPathBetweenManyLocations
+
+`createPathBetweenManyLocations :: warehouseMatrix -> [Array] -> [Array]`
+
+This function will give you the path between multiple locations for the picker tour. It uses `createPathBetweenTwoLocations` to do the work.
+
+### createPathBetweenTwoLocations
+
+`createPathBetweenTwoLocations :: warehouseMatrix -> [Number, Number] -> [Number, Number] -> [Array]`
+
+This function will give you the path between 2 locations for the picker tour. We use the `A*` algorithm to find the path. We use [PathFinding.js](https://github.com/qiao/PathFinding.js) library to do it.
 
 ## warehouseDisplay.js
 

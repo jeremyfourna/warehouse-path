@@ -18,8 +18,14 @@ function uniqMatrixLocations(listOfMatrixLocations) {
 	return _.uniqBy(listOfMatrixLocations, _.isEqual);
 }
 
+// highlightPathBetweenManyLocations :: NodeList -> [Array] -> [Array]
+function highlightPathBetweenManyLocations(nodeList, path) {
+	return path.map(function(cur) {
+		return highlightPathBetweenTwoLocations(nodeList, cur);
+	});
+}
 
-// highlightPathBetweenTwoLocations :: NodeList -> [Array] -> NodeList
+// highlightPathBetweenTwoLocations :: NodeList -> [Array] -> [Array]
 function highlightPathBetweenTwoLocations(nodeList, path) {
 
 	// addClassOnNode :: Number -> String
@@ -27,26 +33,21 @@ function highlightPathBetweenTwoLocations(nodeList, path) {
 		return ` path${nbOfClass}`;
 	}
 
-	path.map(function(cur, index, array) {
-		for (let i = 0; i < nodeList.length; i++) {
-			if (i === cur[1]) {
-				for (let j = 0; j < nodeList[i].children.length; j++) {
-					if (j === cur[0]) {
-						let node = nodeList[i].children[j];
-						if (index === 0 || index === array.length - 1) {
-							nodeList[i].children[j].textContent = "*";
-							node.className = 'location';
-						} else {
-							node.className += addClassOnNode(node.classList.length);
-						}
-						break;
-					}
-				}
-			}
+	return path.map(function(cur, index, array) {
+		let node = nodeList[cur[1]].children[cur[0]];
+		if (index === 0 || index === array.length - 1) {
+			node.textContent = "*";
+			node.className = 'location';
+		} else {
+			node.className += addClassOnNode(node.classList.length);
 		}
 	});
+}
+let newLocationsList = locationsList.slice(0);
 
-	return nodeList;
+// startAndEndAtSameALocation :: String -> [String] -> [String]
+function startAndEndAtSameALocation(location, locationsList) {
+	return endAtALocation(location, startFromALocation(location, locationsList));
 }
 
 // startFromALocation :: String -> [String] -> [String]
@@ -56,35 +57,13 @@ function startFromALocation(startingLocation, locationsList) {
 	return newLocationsList.reverse();
 }
 
-// endToALocation :: String -> [String] -> [String]
-function endToALocation(endingLocation, locationsList) {
-	let newLocationsList = locationsList.slice(0);
+// endAtALocation :: String -> [String] -> [String]
+function endAtALocation(endingLocation, locationsList) {
 	newLocationsList.push(endingLocation);
 	return newLocationsList;
 }
 
-// startAndEndAtSameALocation :: String -> [String] -> [String]
-function startAndEndAtSameALocation(location, locationsList) {
-	return endToALocation(location, startFromALocation(location, locationsList));
-}
-
-// highlightPathBetweenManyLocations :: NodeList -> [Array] -> NodeList
-function highlightPathBetweenManyLocations(nodeList, path) {
-	return path.map(function(cur) {
-		return highlightPathBetweenTwoLocations(nodeList, cur);
-	});
-}
-
-// createPathBetweenTwoLocations :: [Array] -> [Number, Number] -> [Number, Number] -> [Array]
-function createPathBetweenTwoLocations(matrix, originLocation, destinationLocation) {
-	const grid = new PF.Grid(matrix);
-	const finder = new PF.AStarFinder({
-		allowDiagonal: true
-	});
-	return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid);
-}
-
-// createPathBetweenManyLocations :: [Array] -> [Array] -> [Array]
+// createPathBetweenManyLocations :: warehouseMatrix -> [Array] -> [Array]
 function createPathBetweenManyLocations(matrix, locations) {
 	let path = [];
 	let previousLocation = undefined;
@@ -99,6 +78,15 @@ function createPathBetweenManyLocations(matrix, locations) {
 	// Add the path to return to the point of origin
 	path.push(createPathBetweenTwoLocations(matrix, locations[locations.length - 1], locations[0]));
 	return path;
+}
+
+// createPathBetweenTwoLocations :: warehouseMatrix -> [Number, Number] -> [Number, Number] -> [Array]
+function createPathBetweenTwoLocations(matrix, originLocation, destinationLocation) {
+	const grid = new PF.Grid(matrix);
+	const finder = new PF.AStarFinder({
+		allowDiagonal: true
+	});
+	return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid);
 }
 
 // pickerTourInSequence :: [Array] -> Number -> [Array]
