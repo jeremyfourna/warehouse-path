@@ -76,9 +76,6 @@ function parseBigDataBatches(bigListOfBatches) {
 
 // Event to display the next location to go in the HTML
 $('#drawNextLocation').on('click', function() {
-	window.setTimeout()
-	$('.row').remove();
-	$('.superRow').remove();
 	const nbLocations = Number($(this).attr('data-nblocations'));
 	$(this).attr('data-nblocations', nbLocations + 1);
 
@@ -94,5 +91,5 @@ $('#drawNextLocation').on('click', function() {
 ////////////////////////////////////////////////////////////////
 
 testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
-//console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea));
-//testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(bigData), sortingArea);
+//console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea));
+//testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea);
