@@ -76,6 +76,7 @@ function parseBigDataBatches(bigListOfBatches) {
 
 // Event to display the next location to go in the HTML
 $('#drawNextLocation').on('click', function() {
+	window.setTimeout()
 	$('.row').remove();
 	$('.superRow').remove();
 	const nbLocations = Number($(this).attr('data-nblocations'));

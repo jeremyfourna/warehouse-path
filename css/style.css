@@ -1,91 +1,72 @@
-  .wall {
-      background: grey;
-  }
-  
-  .location {
-      background: orange;
-  }
-  
-  .path0 {
-      background: #E56153;
-  }
-  
-  .path0.path1 {
-      background: #D33626;
-  }
-  
-  .path0.path1.path2 {
-      background: #AA2012;
-  }
-  
-  .path0.path1.path2.path3. {
-      background: #880D00;
-  }
-  
-  .path0.path1.path2.path3.path4 {
-      background: #5D0900;
-  }
-  
-  .path0.path1.path2.path3.path4.path5 {
-      background: #5B449D;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6 {
-      background: #422791;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7 {
-      background: #2F1875;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8 {
-      background: #1F0A5D;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9 {
-      background: #130440;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10 {
-      background: #3FAD57;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11 {
-      background: #1DA03A;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12 {
-      background: #0D8026;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13 {
-      background: #006717;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14 {
-      background: #004710;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15 {
-      background: #E5D253;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16 {
-      background: #D3BD26;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17 {
-      background: #AA9612;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18 {
-      background: #AA9612;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18.path19 {
-      background: #887600;
-  }
-  
-  .path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18.path19.path20 {
-      background: #5D5100;
-  }
+body {
+    line-height: 1;
+}
+.wall {
+    background: grey;
+}
+.location {
+    background: orange;
+}
+.path0 {
+    background: #E56153;
+}
+.path0.path1 {
+    background: #D33626;
+}
+.path0.path1.path2 {
+    background: #AA2012;
+}
+.path0.path1.path2.path3. {
+    background: #880D00;
+}
+.path0.path1.path2.path3.path4 {
+    background: #5D0900;
+}
+.path0.path1.path2.path3.path4.path5 {
+    background: #5B449D;
+}
+.path0.path1.path2.path3.path4.path5.path6 {
+    background: #422791;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7 {
+    background: #2F1875;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8 {
+    background: #1F0A5D;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9 {
+    background: #130440;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10 {
+    background: #3FAD57;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11 {
+    background: #1DA03A;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12 {
+    background: #0D8026;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13 {
+    background: #006717;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14 {
+    background: #004710;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15 {
+    background: #E5D253;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16 {
+    background: #D3BD26;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17 {
+    background: #AA9612;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18 {
+    background: #AA9612;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18.path19 {
+    background: #887600;
+}
+.path0.path1.path2.path3.path4.path5.path6.path7.path8.path9.path10.path11.path12.path13.path14.path15.path16.path17.path18.path19.path20 {
+    background: #5D5100;
+}
