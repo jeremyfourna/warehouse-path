@@ -1,12 +1,6 @@
-// locationsListToMatrixData :: [String] -> Function -> Function
-function locationsListToMatrixData(locationsList, functionToApply) {
-	return locationsList.map(functionToApply);
-}
-
-// locationToMatrixData :: String -> Function -> Function
-function locationToMatrixData(location, functionToApply) {
-	return functionToApply(location);
-}
+//////////////
+// Utils //
+////////////
 
 // uniqLocations :: [String] -> [String]
 function uniqLocations(listOfLocations) {
@@ -17,6 +11,54 @@ function uniqLocations(listOfLocations) {
 function uniqMatrixLocations(listOfMatrixLocations) {
 	return _.uniqBy(listOfMatrixLocations, _.isEqual);
 }
+
+// nbStepsForAPickerTour :: [Array] -> Number
+function nbStepsForAPickerTour(pickerTour) {
+	return pickerTour.reduce(function(prev, cur) {
+		return prev + cur.length;
+	}, 0);
+}
+
+////////////////////////////////////////////////////////////////////////
+// Transform origin picker tour to matrix data //
+//////////////////////////////////////////////////////////////////////
+
+// locationsListToMatrixData :: [String] -> Function -> Function
+function locationsListToMatrixData(locationsList, functionToApply) {
+	return locationsList.map(functionToApply);
+}
+
+// locationToMatrixData :: String -> Function -> Function
+function locationToMatrixData(location, functionToApply) {
+	return functionToApply(location);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// Add starting and/or ending point to the picker tour //
+///////////////////////////////////////////////////////////////////////////////////
+
+// startAndEndAtSameALocation :: String -> [String] -> [String]
+function startAndEndAtSameALocation(location, locationsList) {
+	return endAtALocation(location, startFromALocation(location, locationsList));
+}
+
+// startFromALocation :: String -> [String] -> [String]
+function startFromALocation(startingLocation, locationsList) {
+	let newLocationsList = locationsList.slice(0);
+	newLocationsList.reverse().push(startingLocation);
+	return newLocationsList.reverse();
+}
+
+// endAtALocation :: String -> [String] -> [String]
+function endAtALocation(endingLocation, locationsList) {
+	let newLocationsList = locationsList.slice(0);
+	newLocationsList.push(endingLocation);
+	return newLocationsList;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions responsible to display the picker tour on the page //
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 // highlightPathBetweenManyLocations :: NodeList -> [Array] -> [Array]
 function highlightPathBetweenManyLocations(nodeList, path) {
@@ -44,24 +86,19 @@ function highlightPathBetweenTwoLocations(nodeList, path) {
 	});
 }
 
-// startAndEndAtSameALocation :: String -> [String] -> [String]
-function startAndEndAtSameALocation(location, locationsList) {
-	return endAtALocation(location, startFromALocation(location, locationsList));
+// pickerTourInSequence :: [Array] -> Number -> [Array]
+function pickerTourInSequence(pickerTour, nbLocations) {
+	if (nbLocations > pickerTour.length) {
+		return pickerTour;
+	} else {
+		const newPickerTour = pickerTour.slice(0, nbLocations);
+		return newPickerTour;
+	}
 }
 
-// startFromALocation :: String -> [String] -> [String]
-function startFromALocation(startingLocation, locationsList) {
-	let newLocationsList = locationsList.slice(0);
-	newLocationsList.reverse().push(startingLocation);
-	return newLocationsList.reverse();
-}
-
-// endAtALocation :: String -> [String] -> [String]
-function endAtALocation(endingLocation, locationsList) {
-	let newLocationsList = locationsList.slice(0);
-	newLocationsList.push(endingLocation);
-	return newLocationsList;
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Functions responsible to create a path between 2 or more matrix data points //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // createPathBetweenManyLocations :: warehouseMatrix -> [Array] -> [Array]
 function createPathBetweenManyLocations(matrix, locations) {
@@ -89,15 +126,10 @@ function createPathBetweenTwoLocations(matrix, originLocation, destinationLocati
 	return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid);
 }
 
-// pickerTourInSequence :: [Array] -> Number -> [Array]
-function pickerTourInSequence(pickerTour, nbLocations) {
-	if (nbLocations > pickerTour.length) {
-		return pickerTour;
-	} else {
-		const newPickerTour = pickerTour.slice(0, nbLocations);
-		return newPickerTour;
-	}
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function that will a matrix between all the locations of a picker tour //
+// Should be used with an algo function to find best path                    //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // createMatrixWithShortestPathBetweenLocations :: [Array] -> [String] -> Function -> [Array]
 function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functionToApply) {
@@ -131,24 +163,25 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
 	};
 }
 
-// nbStepsForAPickerTour :: [Array] -> Number
-function nbStepsForAPickerTour(pickerTour) {
-	return pickerTour.reduce(function(prev, cur) {
-		return prev + cur.length;
-	}, 0);
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Final functions display, calculate differences between differents algo //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // testAlgoOnManyBatchesReduce :: [Array] -> [Array] -> String -> Number
 function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea) {
 	return listOfBatches.reduce(function(prev, cur, index) {
 		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
+
+		// S-Shaped
+		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
+		// Shortest path
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-
-		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
 		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
+
 		console.log(`Result ${index} : `, shortest - sShaped, "nbStepsForAPickerTour sShaped", sShaped, "nbStepsForAPickerTour shortest", shortest, "gain", _.round((shortest - sShaped) / sShaped * 100, 2), "%");
-		return prev + (shortest - sShaped);
+
+		return prev + shortest - sShaped;
 	}, 0);
 }
 
@@ -159,39 +192,44 @@ function testAlgoOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, nbLoca
 			$(`.row${index}`).remove();
 			$(`.superRow${index}`).remove();
 		}
-		let nodeMatrix = drawWarehouse(matrix, "body", `row${index}`);
-		let nodeMatrix1 = drawWarehouse(matrix, "body", `superRow${index}`);
-
 		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
-		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
-		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 
 		// S-Shaped
+		let nodeMatrix = drawWarehouse(matrix, "body", `row${index}`);
 		highlightPathBetweenManyLocations(nodeMatrix, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)), nbLocations));
 		// Shortest path
+		let nodeMatrix1 = drawWarehouse(matrix, "body", `superRow${index}`);
+		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
+		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 		highlightPathBetweenManyLocations(nodeMatrix1, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)), nbLocations));
 	});
 }
 
-// testAlgoOnManyBatchesResult :: [Array] -> [Array] -> String -> [Object]
-function testAlgoOnManyBatchesResult(matrix, listOfBatches, sortingArea, tagToAppendResults = "body") {
+// testAlgoOnManyBatchesResultForCSV :: [Array] -> [Array] -> String -> [Object]
+function testAlgoOnManyBatchesResultForCSV(matrix, listOfBatches, sortingArea, tagToAppendResults = "body") {
 	let results = [];
+
 	listOfBatches.map(function(cur, index) {
-		let resultForABatch = {};
 		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
+
+		// S-Shaped
+		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
+		// Shortest path
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-
-		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
 		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
 
-		resultForABatch.pickerTourLength = pickerTour.length;
-		resultForABatch.sShapedSteps = sShaped;
-		resultForABatch.shortestSteps = shortest;
-		resultForABatch.diff = shortest - sShaped;
-		resultForABatch.gain = _.round((shortest - sShaped) / sShaped * 100, 2);
+		let resultForABatch = {
+			pickerTourLength: pickerTour.length,
+			sShapedSteps: sShaped,
+			shortestSteps: shortest,
+			diff: shortest - sShaped,
+			gain: _.round((shortest - sShaped) / sShaped * 100, 2)
+		};
+
 		return results.push(resultForABatch);
 	});
+
 	let str = JSON.stringify(results, null, 4);
 
 	return $(tagToAppendResults).append(`<code>${str}</code>`);

@@ -1,11 +1,9 @@
 // drawWarehouse :: warehouseMatrix -> DOM element -> String -> Nodelist
 function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "row") {
-	// Check parameters
-	if (typeof tagToAppendTheWarehouse !== "string") {
-		return $(tagToAppendTheWarehouse).append(`<p>tagToAppendTheWarehouse should be STRING like "body" or "#myContainer" or ".manyPlaces" ; the value passed was ${tagToAppendTheWarehouse}</p>`);
-	}
+
 	// addDiv :: Array -> String -> String
 	function addDiv(list, openString = `<div class="${classForRow}">`) {
+
 		// addDivEl :: String -> String
 		function addDivEl(string, className, style) {
 			if (className === 0) {
@@ -51,15 +49,24 @@ function drawWarehouse(matrix, tagToAppendTheWarehouse = "body", classForRow = "
 			}
 		}
 	}
+
+	// Check parameters
+	if (typeof tagToAppendTheWarehouse !== "string") {
+		return $(tagToAppendTheWarehouse).append(`<p>tagToAppendTheWarehouse should be STRING like "body" or "#myContainer" or ".manyPlaces" ; the value passed was ${tagToAppendTheWarehouse}</p>`);
+	}
+	// Style for the div element inside a warehouse
 	const style = "width: 15px;height: 15px;display: inline-block;border: 0.5px solid black;";
+	// Add in the page the warehouse
 	$(tagToAppendTheWarehouse).append(addDiv(matrix));
+	// Retrieve the warehouse from the DOM
 	const nodeMatrix = $$(`.${classForRow}`);
-	// Step 3 : Return the matrix
+	// Return the warehouse for reuse into other functions
 	return nodeMatrix;
 }
 
 // createWarehouseMatrix :: Number -> Number -> [Number] -> [Array]
 function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, listOfSeparation) {
+
 	// createMatrix :: Number -> Number -> [Number] -> Number -> Number -> Array -> [Array]
 	function createMatrix(startHeight, startWidth, listOfSeparation, height = 0, width = 0, matrix = []) {
 		// Walkability matrix. Zero is walkable, One is not
@@ -130,6 +137,7 @@ function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, li
 		console.log(`There should be only numbers >= 0 inside listOfSeparation ; we found those numbers inside  ${isNegativeValuesInArray(listOfSeparation)}`);
 		return [];
 	}
+
 	// Round numberOfRackInAisle and numberOfAisleInWarehouse to prevent errors
 	numberOfRackInAisle = Math.round(numberOfRackInAisle);
 	numberOfAisleInWarehouse = Math.round(numberOfAisleInWarehouse);

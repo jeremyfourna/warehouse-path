@@ -2,6 +2,8 @@
 
 Show the picker path in a warehouse based on the warehouse configuration
 
+![alt text](public/result_for_warehouse.png "Result for a warehouse and picker tour")
+
 ### Table of content
 [Algo folder](#algos-folder)<br>
 [script.js](#scriptjs)<br>
