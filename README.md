@@ -99,6 +99,30 @@ This function will give you the path between multiple locations for the picker t
 
 This function will give you the path between 2 locations for the picker tour. We use the `A*` algorithm to find the path. We use [PathFinding.js](https://github.com/qiao/PathFinding.js) library to do it.
 
+### createMatrixWithShortestPathBetweenLocations
+
+`createMatrixWithShortestPathBetweenLocations :: warehouseMatrix -> [String] -> Function -> Object`
+
+This function will return an object with the shortest distances between all location in a picker tour. This will be useful for an algo to choose to which locations to go after the current one.
+
+### testAlgoOnManyBatchesReduce
+
+`testAlgoOnManyBatchesReduce :: [Array] -> [Array] -> String -> Number`
+
+This function will return the difference of steps between the two available algos `S-Shaped` and `closest neighbour`. The steps don't represent actual meters because each warehouse configuration is different you will need to convert it to another unit if you want to use it to take some decisions.
+
+### testAlgoOnManyBatchesDisplay
+
+`testAlgoOnManyBatchesDisplay :: [Array] -> [Array] -> String -> Number -> Boolean -> Nodelist`
+
+This function will display on the `DOM` the different path used for the two available algos `S-Shaped` and `closest neighbour`. If you use many picker tour, the function will run a long time...
+
+### testAlgoOnManyBatchesResultForCSV
+
+`testAlgoOnManyBatchesResultForCSV :: [Array] -> [Array] -> String -> [Object]`
+
+This function will display to the `DOM` a list of `Object` that you can turn to a `CSV` file via other tools like this [one](https://konklone.io/json/).
+
 ## warehouseDisplay.js
 
 This file contains all the functions used to draw or create a warehouse with the configuration you wish.
@@ -123,6 +147,8 @@ const warehouseMatrix = [
 drawWarehouse(warehouseMatrix, "body", "row");
 ```
 
+![alt text](public/simple_warehouse_config.PNG "Simple warehouse configuration")
+
 ### createWarehouseMatrix
 
 `createWarehouseMatrix :: Number -> Number -> [Number] -> [Array]`
@@ -138,15 +164,23 @@ const warehouseWidth = 6; // Number of aisles in a warehouse
 const warehouseSeparation = [2, 4] // 0 index based
 
 createWarehouseMatrix(warehouseHeight, warehouseWidth, warehouseSeparation);
+
+// This will return a matrix like this :
+
+[
+	[0, 0, 0, 0, 0, ...],
+	[0, 0, 1, 0, 0, ...],
+	[0, 0, 1, 0, 0, ...],
+	[0, 0, 1, 0, 0, ...],
+	...
+	...
+	[0, 0, 0, 0, 0, ...]
+]
 ```
 
-This will render into the `DOM` with the help of `drawWarehouse`.
+This will render into the `DOM` with the help of `drawWarehouse`. _The first and last row will always be walkable_.
 
-![alt text](public/simple_warehouse_config.PNG "Simple warehouse configuration")
-
-The first and last row will always be walkable.
-
-# Reading list and useful websites
+## Reading list and useful websites
 
 * https://simple.wikipedia.org/wiki/Travelling_salesman_problem
 * https://simple.wikipedia.org/wiki/Monte_Carlo_algorithm

@@ -131,7 +131,7 @@ function createPathBetweenTwoLocations(matrix, originLocation, destinationLocati
 // Should be used with an algo function to find best path                    //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// createMatrixWithShortestPathBetweenLocations :: [Array] -> [String] -> Function -> [Array]
+// createMatrixWithShortestPathBetweenLocations :: warehouseMatrix -> [String] -> Function -> Object
 function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functionToApply) {
 	// pickerTour should also contain the point of origin/return
 	let ref = [];
@@ -205,7 +205,7 @@ function testAlgoOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, nbLoca
 	});
 }
 
-// testAlgoOnManyBatchesResultForCSV :: [Array] -> [Array] -> String -> [Object]
+// testAlgoOnManyBatchesResultForCSV::[Array] - > [Array] - > String - > [Object]
 function testAlgoOnManyBatchesResultForCSV(matrix, listOfBatches, sortingArea, tagToAppendResults = "body") {
 	let results = [];
 
