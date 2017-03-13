@@ -15,7 +15,7 @@ Show the picker path in a warehouse based on the warehouse configuration
 
 In this folder you can find all the related algorithms used by this repo
 
-### closestLocations.js
+### closestNeighbour.js
 
 This file contains 1 function **shortestPathBetweenLocations**. This function will reorder the picker tour by finding the closest location at each round when the picker will go to another location.
 
