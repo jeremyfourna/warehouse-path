@@ -180,6 +180,18 @@ createWarehouseMatrix(warehouseHeight, warehouseWidth, warehouseSeparation);
 
 This will render into the `DOM` with the help of `drawWarehouse`. _The first and last row will always be walkable_.
 
+## Performance between `S-Shaped` and `closest neighbour` algos
+
+This graph was made with [Westwing](https://www.westwing.de/) data.
+
+![alt text](public/plot_ww_big.png "Simple warehouse configuration")
+
+* S-Shape = `S-Shaped`
+* Shortest = `closest neighbour`
+* Difference = `closest neighbour` steps for a given picker tour **minus** `S-Shaped` steps for a given picker tour
+
+The `closest neighbour` tends to performance better than the `S-Shaped` and this is even more true as the number of locations in a picker tour increase.
+
 ## Reading list and useful websites
 
 * https://simple.wikipedia.org/wiki/Travelling_salesman_problem
