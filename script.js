@@ -95,10 +95,8 @@ let ellipse = createEllipse(locMatrixData);
 highlightPathBetweenManyLocations(warehouse, createPathBetweenManyLocations(matrix, locMatrixData));
 displayEllipse(warehouse, ellipse);
 
-console.log("lower left", locationsInCorner(ellipse[4], ellipse[3], ellipse[2], locMatrixData));
-console.log("lower right", locationsInCorner(ellipse[4], ellipse[1], ellipse[2], locMatrixData));
-console.log("upper right", locationsInCorner(ellipse[4], ellipse[1], ellipse[0], locMatrixData));
-console.log("upper left", locationsInCorner(ellipse[4], ellipse[3], ellipse[0], locMatrixData));
+//console.log(locMatrixData.length);
+console.log(locationsListInCorner(ellipse, locMatrixData));
 //testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
 //console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea));
 //testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea);
