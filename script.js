@@ -94,5 +94,5 @@ $('#drawNextLocation').on('click', function() {
 //let warehouse = drawWarehouse(matrix);
 
 //testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
-console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea));
+console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea, westwingLocationToMatrixData));
 //testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea);

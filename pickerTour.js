@@ -168,24 +168,24 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // testAlgoOnManyBatchesReduce :: [Array] -> [Array] -> String -> Number
-function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea) {
+function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea, functionToApply) {
 	return listOfBatches.reduce(function(prev, cur, index) {
-		let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
-
 		// S-Shaped
-		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(pickerTour, westwingLocationToMatrixData)));
+		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
 		// Shortest path
-		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
-		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
+		let shortest = nbStepsForAPickerTour(createShortestPath(matrix, sortingArea, cur, functionToApply));
 		// Shortest via ellipse
-		let pickerTourForEllipse = locationsListToMatrixData(startFromALocation(sortingArea, uniqLocations(cur)), westwingLocationToMatrixData);
-		let ellipse = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShortestPathViaEllipse(matrix, pickerTourForEllipse)));
+		let ellipse = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShortestPathViaEllipse(matrix, sortingArea, cur, functionToApply)));
 
 		console.log(`Result ${index} : nbStepsForAPickerTour sShaped`, sShaped, "nbStepsForAPickerTour shortest", shortest, "gain", shortest - sShaped, _.round((shortest - sShaped) / sShaped * 100, 2), "%", "nbStepsForAPickerTour ellipse", ellipse, "gain", ellipse - sShaped, _.round((ellipse - sShaped) / sShaped * 100, 2), "%");
 
-		return prev + ellipse - sShaped;
-	}, 0);
+		prev.sShaped += sShaped;
+		prev.shortest += shortest;
+		prev.ellipse += ellipse;
+		prev.shortestGainOverSShaped += shortest - sShaped;
+		prev.ellipseGainOverSShaped += ellipse - sShaped;
+		return prev;
+	}, { sShaped: 0, shortest: 0, ellipse: 0, shortestGainOverSShaped: 0, ellipseGainOverSShaped: 0 });
 }
 
 // testAlgoOnManyBatchesDisplay :: [Array] -> [Array] -> String -> Number -> Boolean -> Nodelist

@@ -27,3 +27,8 @@ function sShapedLocationDesc(locationsList) {
 	});
 	return newList;
 }
+
+function createShorterSShapedPath(sortingArea, locationsList, functionToApply) {
+	const pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(locationsList)));
+	return locationsListToMatrixData(pickerTour, functionToApply);
+}

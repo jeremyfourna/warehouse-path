@@ -129,10 +129,11 @@ function createMatrixWithShortestPathBetweenCornerLocations(matrix, startLocatio
 	};
 }
 
-// createShortestPathViaEllipse :: warehouseMatrix -> [Array] -> [Array]
-function createShortestPathViaEllipse(matrix, locationsListInMatrixData) {
-	const ellipse = createEllipse(locationsListInMatrixData);
-	const pickerTourWithoutCardinals = removeCardinalPoints(locationsListInCorner(ellipse, locationsListInMatrixData), ellipse);
+// createShortestPathViaEllipse ::
+function createShortestPathViaEllipse(matrix, sortingArea, locationsList, functionToApply) {
+	const pickerTourForEllipse = locationsListToMatrixData(startFromALocation(sortingArea, uniqLocations(locationsList)), functionToApply);
+	const ellipse = createEllipse(pickerTourForEllipse);
+	const pickerTourWithoutCardinals = removeCardinalPoints(locationsListInCorner(ellipse, pickerTourForEllipse), ellipse);
 
 	const matrixCorner1 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[0], ellipse[1], pickerTourWithoutCardinals[0]);
 	const matrixCorner2 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[1], ellipse[2], pickerTourWithoutCardinals[1]);

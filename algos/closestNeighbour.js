@@ -14,6 +14,11 @@ function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, st
 			}
 		});
 		let notInVisitedLocations = _.differenceBy(sortingDistance, visitedLocations, "name");
+		if (notInVisitedLocations.length === 0) {
+			let newList = [];
+			newList.push(matrixWithShortestPathBetweenLocations.ref[0].name);
+			return newList;
+		}
 		closestLocation = matrixWithShortestPathBetweenLocations.ref.find(function(cur) {
 			return cur.name === notInVisitedLocations[0].name;
 		});
@@ -37,6 +42,12 @@ function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, st
 	} else {
 		visitedLocations.push(startingPointInMatrix);
 	}
-
 	return findClosestLocation(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations);
+}
+
+function createShortestPath(matrix, sortingArea, locationsList, functionToApply) {
+	let pickerTour = startAndEndAtSameALocation(sortingArea, uniqLocations(locationsList));
+	let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), functionToApply);
+	let shortestPath = shortestPathBetweenLocations(short, sortingArea);
+	return createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, functionToApply));
 }
