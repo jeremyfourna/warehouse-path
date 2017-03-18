@@ -60,7 +60,9 @@ function parseBigDataBatches(bigListOfBatches) {
 			tempPickerTour.push(cur);
 			return previous = cur;
 		} else {
-			listOfBatches.push(tempPickerTour);
+			if (tempPickerTour.length > 4) {
+				listOfBatches.push(tempPickerTour);
+			}
 			tempPickerTour = [];
 			return previous = undefined;
 		}
@@ -89,14 +91,8 @@ $('#drawNextLocation').on('click', function() {
 //////////////////////////////////////////////////////////////////
 // Init the warehouse display, if you want //
 ////////////////////////////////////////////////////////////////
-let warehouse = drawWarehouse(matrix);
-let locMatrixData = locationsListToMatrixData(startFromALocation(sortingArea, pickerTour), westwingLocationToMatrixData);
-let ellipse = createEllipse(locMatrixData);
-highlightPathBetweenManyLocations(warehouse, createPathBetweenManyLocations(matrix, locMatrixData));
-displayEllipse(warehouse, ellipse);
+//let warehouse = drawWarehouse(matrix);
 
-//console.log(locMatrixData.length);
-console.log(locationsListInCorner(ellipse, locMatrixData));
 //testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
-//console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea));
+console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea));
 //testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea);

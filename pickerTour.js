@@ -144,9 +144,9 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
 		});
 	});
 
-	ref.map(function(cur, index, array) {
+	ref.map(function(cur) {
 		let pathForEachLocations = [];
-		ref.map(function(cur1, index1, array1) {
+		ref.map(function(cur1) {
 			const path = createPathBetweenTwoLocations(matrix, cur.coordinates, cur1.coordinates);
 			return pathForEachLocations.push({
 				name: cur1.name,
@@ -178,10 +178,13 @@ function testAlgoOnManyBatchesReduce(matrix, listOfBatches, sortingArea) {
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
 		let shortest = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)));
+		// Shortest via ellipse
+		let pickerTourForEllipse = locationsListToMatrixData(startFromALocation(sortingArea, uniqLocations(cur)), westwingLocationToMatrixData);
+		let ellipse = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShortestPathViaEllipse(matrix, pickerTourForEllipse)));
 
-		console.log(`Result ${index} : `, shortest - sShaped, "nbStepsForAPickerTour sShaped", sShaped, "nbStepsForAPickerTour shortest", shortest, "gain", _.round((shortest - sShaped) / sShaped * 100, 2), "%");
+		console.log(`Result ${index} : nbStepsForAPickerTour sShaped`, sShaped, "nbStepsForAPickerTour shortest", shortest, "gain", shortest - sShaped, _.round((shortest - sShaped) / sShaped * 100, 2), "%", "nbStepsForAPickerTour ellipse", ellipse, "gain", ellipse - sShaped, _.round((ellipse - sShaped) / sShaped * 100, 2), "%");
 
-		return prev + shortest - sShaped;
+		return prev + ellipse - sShaped;
 	}, 0);
 }
 
@@ -201,7 +204,8 @@ function testAlgoOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, nbLoca
 		let nodeMatrix1 = drawWarehouse(matrix, "body", `superRow${index}`);
 		let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), westwingLocationToMatrixData);
 		let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-		highlightPathBetweenManyLocations(nodeMatrix1, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)), nbLocations));
+
+		return highlightPathBetweenManyLocations(nodeMatrix1, pickerTourInSequence(createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, westwingLocationToMatrixData)), nbLocations));
 	});
 }
 
