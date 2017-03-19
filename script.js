@@ -85,7 +85,7 @@ $('#drawNextLocation').on('click', function() {
 	// Call your function to execute here //
 	/////////////////////////////////////////////////////////
 
-	return testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, nbLocations, true);
+	return testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData, nbLocations, true);
 });
 
 //////////////////////////////////////////////////////////////////
@@ -93,6 +93,6 @@ $('#drawNextLocation').on('click', function() {
 ////////////////////////////////////////////////////////////////
 //let warehouse = drawWarehouse(matrix);
 
-//testAlgoOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea);
-console.log(testAlgoOnManyBatchesReduce(matrix, parseBigDataBatches(bigData), sortingArea, westwingLocationToMatrixData));
-//testAlgoOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea);
+//testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData);
+//console.log(testEllipseAgainstSShapedOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData));
+testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData);

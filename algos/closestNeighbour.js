@@ -49,5 +49,5 @@ function createShortestPath(matrix, sortingArea, locationsList, functionToApply)
 	let pickerTour = startAndEndAtSameALocation(sortingArea, uniqLocations(locationsList));
 	let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), functionToApply);
 	let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-	return createPathBetweenManyLocations(matrix, locationsListToMatrixData(shortestPath, functionToApply));
+	return locationsListToMatrixData(shortestPath, functionToApply);
 }
