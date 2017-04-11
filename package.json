@@ -1,0 +1,30 @@
+{
+  "name": "warehouse-path",
+  "version": "1.0.0",
+  "description": "Show the picker path in a warehouse based on the warehouse configuration",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/main.ts -p [ tsify ] > build/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremyfourna/warehouse-path.git"
+  },
+  "author": "Jeremy Fourna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeremyfourna/warehouse-path/issues"
+  },
+  "homepage": "https://github.com/jeremyfourna/warehouse-path#readme",
+  "devDependencies": {
+    "@types/jquery": "^2.0.41",
+    "@types/node": "^7.0.12",
+    "browserify": "^14.1.0",
+    "tsify": "^3.0.1",
+    "typescript": "^2.2.2"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}
