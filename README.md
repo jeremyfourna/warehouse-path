@@ -15,6 +15,10 @@ Show the picker path in a warehouse based on the warehouse configuration
 
 In this folder you can find all the related algorithms used by this repo
 
+### ellipse.js
+
+Description WIP
+
 ### closestNeighbour.js
 
 This file contains 1 function **shortestPathBetweenLocations**. This function will reorder the picker tour by finding the closest location at each round when the picker will go to another location.
@@ -184,13 +188,25 @@ This will render into the `DOM` with the help of `drawWarehouse`. _The first and
 
 This graph was made with [Westwing](https://www.westwing.de/) data.
 
-![alt text](public/plot_ww_big.png "Simple warehouse configuration")
+![alt text](public/closestNeighbour_sShaped.png "Simple warehouse configuration")
 
 * S-Shape = `S-Shaped`
 * Shortest = `closest neighbour`
 * Difference = `closest neighbour` steps for a given picker tour **minus** `S-Shaped` steps for a given picker tour
 
 The `closest neighbour` tends to performance better than the `S-Shaped` and this is even more true as the number of locations in a picker tour increase.
+
+## Performance between `S-Shaped` and `ellipse` algos
+
+This graph was made with [Westwing](https://www.westwing.de/) data.
+
+![alt text](public/ellipse_sShaped.png "Simple warehouse configuration")
+
+* S-Shape = `S-Shaped`
+* Ellipse = `ellipse`
+* Difference = `ellipse` steps for a given picker tour **minus** `S-Shaped` steps for a given picker tour
+
+The `ellipse` tends to performance better than the `S-Shaped` and this is even more true as the number of locations in a picker tour increase. It also outperform the `closest neighbour` algo.
 
 ## Reading list and useful websites
 
