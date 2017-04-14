@@ -1,15 +1,17 @@
+import { Path } from "./interface"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions responsible to display the picker tour on the page //
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-function highlightPathBetweenManyLocations(nodeList, path:number[][]) {
+export function highlightPathBetweenManyLocations(nodeList, path:Path) {
 	return path.map(function(cur) {
 		return highlightPathBetweenTwoLocations(nodeList, cur);
 	});
 }
 
 // highlightPathBetweenTwoLocations :: NodeList -> [Array] -> [Array]
-function highlightPathBetweenTwoLocations(nodeList, path:number[][]) {
+export function highlightPathBetweenTwoLocations(nodeList, path:Path) {
 
 	function addClassOnNode(nbOfClass:number):string {
 		return ` path${nbOfClass}`;

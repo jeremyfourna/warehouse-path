@@ -19,7 +19,7 @@ export function createPathBetweenManyLocations(matrix:Matrix, matrixLocations:Ma
 	});
 	// Add the path to return to the point of origin
 	path.push(createPathBetweenTwoLocations(matrix, matrixLocations[matrixLocations.length - 1], matrixLocations[0]))
-	
+
 	return path
 }
 
@@ -28,7 +28,7 @@ export function createPathBetweenTwoLocations(matrix:Matrix, originLocation:Matr
 	const finder = new AStarFinder({
 		allowDiagonal: true
 	});
-	
+
 	return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid)
 }
 
