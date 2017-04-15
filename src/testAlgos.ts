@@ -1,12 +1,16 @@
+import { Matrix, Locations, Location } from "./interface"
 import { nbStepsForAPickerTour } from "./utils"
 import { createPathBetweenManyLocations } from "./path"
+import { createShortestPath } from "./algos/closestNeighbour"
+import { createShorterSShapedPath } from "./algos/sShapedLocations"
+import { createShortestPathViaEllipse } from "./algos/ellipse"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Final functions display, calculate differences between differents algo //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // testClosestNeightbourAgainstSShapedOnManyBatchesReduce :: [Array] -> [Array] -> String -> Function -> Object
-function testClosestNeightbourAgainstSShapedOnManyBatchesReduce(matrix, listOfBatches, sortingArea, functionToApply) {
+export function closestNeightbourAgainstSShapedOnManyBatchesReduce(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply) {
 	return listOfBatches.reduce(function(prev, cur, index) {
 		// S-Shaped
 		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
@@ -24,7 +28,7 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesReduce(matrix, listOfBa
 }
 
 // testEllipseAgainstSShapedOnManyBatchesReduce :: [Array] -> [Array] -> String -> Function -> Object
-function testEllipseAgainstSShapedOnManyBatchesReduce(matrix, listOfBatches, sortingArea, functionToApply) {
+export function ellipseAgainstSShapedOnManyBatchesReduce(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply) {
 	return listOfBatches.reduce(function(prev, cur, index) {
 		// S-Shaped
 		let sShaped = nbStepsForAPickerTour(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
@@ -41,7 +45,7 @@ function testEllipseAgainstSShapedOnManyBatchesReduce(matrix, listOfBatches, sor
 }
 
 // testClosestNeightbourAgainstSShapedOnManyBatchesDisplay :: [Array] -> [Array] -> String -> Function  -> Number -> Boolean -> ?
-function testClosestNeightbourAgainstSShapedOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, functionToApply, nbLocations = 1, cleanUp = false) {
+export function closestNeightbourAgainstSShapedOnManyBatchesDisplay(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply, nbLocations = 1, cleanUp = false) {
 	return listOfBatches.map(function(cur, index) {
 		if (cleanUp === true) {
 			$(`.row${index}`).remove();
@@ -85,7 +89,7 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesDisplay(matrix, listOfB
 }
 
 // testEllipseAgainstSShapedOnManyBatchesDisplay :: [Array] -> [Array] -> String -> Function  -> Number -> Boolean -> ?
-function testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, listOfBatches, sortingArea, functionToApply, nbLocations = 1, cleanUp = false) {
+export function ellipseAgainstSShapedOnManyBatchesDisplay(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply, nbLocations = 1, cleanUp = false) {
 	return listOfBatches.map(function(cur, index) {
 		if (cleanUp === true) {
 			$(`.row${index}`).remove();
@@ -129,7 +133,7 @@ function testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, listOfBatches, so
 }
 
 // testClosestNeightbourAgainstSShapedOnManyBatchesResultForCSV::[Array] -> [Array] -> String -> Function -> [Object]
-function testClosestNeightbourAgainstSShapedOnManyBatchesResultForCSV(matrix, listOfBatches, sortingArea, functionToApply, tagToAppendResults = "body") {
+export function closestNeightbourAgainstSShapedOnManyBatchesResultForCSV(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply, tagToAppendResults = "body") {
 	let results = [];
 
 	listOfBatches.map(function(cur, index) {
@@ -157,7 +161,7 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesResultForCSV(matrix, li
 }
 
 // testEllipseAgainstSShapedOnManyBatchesResultForCSV::[Array] - > [Array] -> String -> Function -> [Object]
-function testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, listOfBatches, sortingArea, functionToApply, tagToAppendResults = "body") {
+export function ellipseAgainstSShapedOnManyBatchesResultForCSV(matrix:Matrix, listOfBatches:Locations[], sortingArea:Location, functionToApply, tagToAppendResults = "body") {
 	let results = [];
 
 	listOfBatches.map(function(cur, index) {

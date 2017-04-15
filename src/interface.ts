@@ -5,6 +5,7 @@ export type MatrixLocation = number[];
 export type MatrixLocations = number[][];
 export type MatrixPickerTour = number[][];
 export type Path = number[][];
+export type PathStep = number[];
 export type PickerTour = string[];
 
 export interface MatrixWithShortestPathBetweenLocations {

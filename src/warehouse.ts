@@ -1,46 +1,5 @@
 import { Matrix } from "./interface"
 
-export function drawWarehouse(matrix:Matrix, tagToAppendTheWarehouse = "body", classForRow = "row") {
-
-	function addDiv(list:Matrix, openString:string, style:string):string {
-
-		function addDivEl(string:string, className:number, style:string):string {
-			if (className === 0) {
-				return string + `<div style="${style}"></div>`
-			} else {
-				return string + `<div class="wall" style="${style}"></div>`
-			}
-		}
-
-		function closeDivEl(string:string):string {
-			return string + "</div>"
-		}
-
-		function openDivEl(string:string, classForRow:string):string {
-			return string + `<div class="${classForRow}">`
-		}
-
-		list.map((cur:number[], index:number) => {
-			openString = openDivEl(openString, classForRow)
-			cur.map((cur1:number) => {
-				openString = addDivEl(openString, cur1, style)
-			})
-			openString = closeDivEl(openString)
-		})
-
-		return openString
-	}
-
-	// Style for the div element inside a warehouse
-	const style:string = "width: 15pxheight: 15pxdisplay: inline-blockborder: 0.5px solid black"
-	// Add in the page the warehouse
-	$(tagToAppendTheWarehouse).append(addDiv(matrix, "", style))
-	// Retrieve the warehouse from the DOM
-	const nodeMatrix = $(`.${classForRow}`)
-	// Return the warehouse for reuse into other functions
-	return nodeMatrix
-}
-
 export function createWarehouseMatrix(numberOfRackInAisle:number, numberOfAisleInWarehouse:number, listOfSeparation:number[]):Matrix {
 
 	// createMatrix :: Number -> Number -> [Number] -> Number -> Number -> Array -> [Array]
@@ -73,8 +32,7 @@ export function createWarehouseMatrix(numberOfRackInAisle:number, numberOfAisleI
 		}
 	}
 
-	// defineWidthWithWalls :: Number -> Number
-	function defineWidthWithWalls(originalWidth) {
+	function defineWidthWithWalls(originalWidth:number):number {
 		// The wall are located every two aisles like this (a = aisle  | = wall) :
 		// a : a | a : a | a : a | . : . | . : . | n : n
 		if (originalWidth <= 2) { // so there is no wall needed
@@ -85,9 +43,8 @@ export function createWarehouseMatrix(numberOfRackInAisle:number, numberOfAisleI
 		}
 	}
 
-	// isNegativeValuesInArray :: Array -> Array
-	function isNegativeValuesInArray(list) {
-		let negativeValues = []
+	function isNegativeValuesInArray(list:number[]):number[] {
+		let negativeValues:number[] = []
 		list.map(function(cur) {
 			if (cur < 0) {
 				return negativeValues.push(cur)

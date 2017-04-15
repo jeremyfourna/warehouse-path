@@ -1,7 +1,11 @@
+import { differenceBy } from "lodash"
+
+import { MatrixWithShortestPathBetweenLocations, MatrixLocation, Ref } from "../interface"
+
 // shortestPathBetweenLocations :: Object -> String -> [String]
-function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, startingPoint) {
+function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations:MatrixWithShortestPathBetweenLocations, startingPoint:MatrixLocation) {
 	// findClosestLocation :: matrixWithShortestPathBetweenLocations -> Object -> [Object]
-	function findClosestLocation(matrixWithShortestPathBetweenLocations, currentPosition, visitedLocations) {
+	function findClosestLocation(matrixWithShortestPathBetweenLocations:MatrixWithShortestPathBetweenLocations, currentPosition: Ref, visitedLocations:Ref[]) {
 		let sortingDistance = matrixWithShortestPathBetweenLocations.matrix[currentPosition.indexInMatrix];
 		let closestLocation = undefined;
 		sortingDistance.sort(function(a, b) {
@@ -13,7 +17,7 @@ function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, st
 				return 0;
 			}
 		});
-		let notInVisitedLocations = _.differenceBy(sortingDistance, visitedLocations, "name");
+		let notInVisitedLocations = differenceBy(sortingDistance, visitedLocations, "name");
 		if (notInVisitedLocations.length === 0) {
 			let newList = [];
 			newList.push(matrixWithShortestPathBetweenLocations.ref[0].name);
@@ -45,7 +49,7 @@ function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, st
 	return findClosestLocation(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations);
 }
 
-function createShortestPath(matrix, sortingArea, locationsList, functionToApply) {
+export function createShortestPath(matrix, sortingArea, locationsList, functionToApply) {
 	let pickerTour = startAndEndAtSameALocation(sortingArea, uniqLocations(locationsList));
 	let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), functionToApply);
 	let shortestPath = shortestPathBetweenLocations(short, sortingArea);

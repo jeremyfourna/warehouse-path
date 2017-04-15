@@ -1,4 +1,4 @@
-import { Locations, Location, PickerTour } from "./interface"
+import { Locations, Location, PickerTour, MatrixLocation, MatrixLocations } from "./interface"
 
 ////////////////////////////////////////////////////////////////////////
 // Transform origin picker tour to matrix data //
@@ -8,7 +8,7 @@ export function locationsListToMatrixData(locationsList:Locations, functionToApp
 	return locationsList.map(functionToApply)
 }
 
-export function locationToMatrixData(location:Location, functionToApply) {
+export function locationToMatrixData(location:Location, functionToApply):MatrixLocation {
 	return functionToApply(location)
 }
 
