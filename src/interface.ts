@@ -1,12 +1,13 @@
+export type EllipseCoordinates = number[][];
 export type Location = string;
-export type Locations = string[];
+export type Locations = Location[];
 export type Matrix = number[][];
 export type MatrixLocation = number[];
-export type MatrixLocations = number[][];
+export type MatrixLocations = MatrixLocation[];
 export type MatrixPickerTour = number[][];
-export type Path = number[][];
-export type PathStep = number[];
-export type PickerTour = string[];
+export type Path = MatrixLocations;
+export type PathStep = MatrixLocation;
+export type PickerTour = Locations;
 
 export interface MatrixWithShortestPathBetweenLocations {
 	ref: Ref[];

@@ -1,5 +1,7 @@
+import { differenceBy } from "lodash"
 import { AStarFinder, Grid } from "pathfinding"
-import { Location, Matrix, MatrixLocation,MatrixLocations, Path, PickerTour, MatrixWithShortestPathBetweenLocations, Ref, ShortestMatrixPathBetweenLocations } from "./interface"
+
+import { Location, Matrix, MatrixLocation,MatrixLocations, Path, PickerTour, MatrixWithShortestPathBetweenLocations, Ref, ShortestMatrixPathBetweenLocations, Locations } from "./interface"
 import { locationToMatrixData } from "./transform"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +18,7 @@ export function createPathBetweenManyLocations(matrix:Matrix, matrixLocations:Ma
 			path.push(createPathBetweenTwoLocations(matrix, previousLocation, cur))
 			return previousLocation = cur
 		}
-	});
+	})
 	// Add the path to return to the point of origin
 	path.push(createPathBetweenTwoLocations(matrix, matrixLocations[matrixLocations.length - 1], matrixLocations[0]))
 
@@ -27,7 +29,7 @@ export function createPathBetweenTwoLocations(matrix:Matrix, originLocation:Matr
 	const grid = new Grid(matrix)
 	const finder = new AStarFinder({
 		allowDiagonal: true
-	});
+	})
 
 	return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid)
 }
@@ -66,4 +68,50 @@ export function createMatrixWithShortestPathBetweenLocations(matrix:Matrix, pick
 		ref,
 		matrix: shortestMatrix
 	}
+}
+
+export function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations:MatrixWithShortestPathBetweenLocations, startingPoint:Location):Locations {
+	
+	function findClosestLocation(matrixWithShortestPathBetweenLocations:MatrixWithShortestPathBetweenLocations, currentPosition: Ref, visitedLocations:Ref[]):Locations {
+		let sortingDistance = matrixWithShortestPathBetweenLocations.matrix[currentPosition.indexInMatrix]
+		let closestLocation = undefined
+		sortingDistance.sort((a, b) => {
+			if (a.pathLength < b.pathLength) {
+				return -1
+			} else if (a.pathLength > b.pathLength) {
+				return 1
+			} else {
+				return 0
+			}
+		})
+		let notInVisitedLocations = differenceBy(sortingDistance, visitedLocations, "name")
+		if (notInVisitedLocations.length === 0) {
+			let newList = []
+			newList.push(matrixWithShortestPathBetweenLocations.ref[0].name)
+			return newList
+		}
+		closestLocation = matrixWithShortestPathBetweenLocations.ref.find((cur) => {
+			return cur.name === notInVisitedLocations[0].name
+		})
+		visitedLocations.push(closestLocation)
+		if (visitedLocations.length !== matrixWithShortestPathBetweenLocations.ref.length) {
+			return findClosestLocation(matrixWithShortestPathBetweenLocations, closestLocation, visitedLocations)
+		} else {
+			return visitedLocations.map((cur) => {
+				return cur.name
+			})
+		}
+	}
+
+	let visitedLocations = []
+	let startingPointInMatrix = matrixWithShortestPathBetweenLocations.ref.find((cur) => {
+		return cur.name === startingPoint
+	})
+
+	if (startingPointInMatrix === undefined) {
+		return []
+	} else {
+		visitedLocations.push(startingPointInMatrix)
+	}
+	return findClosestLocation(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations)
 }

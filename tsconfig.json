@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
-		"types": ["jquery", "node", "lodash", "pathfinding"]
+		"types": ["jquery", "node", "lodash", "pathfinding"],
+		"target": "ES6"
 	}
 }

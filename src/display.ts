@@ -5,27 +5,27 @@ import { Path, PathStep, Matrix } from "./interface"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function highlightPathBetweenManyLocations(nodeList, path:Path) {
-	return path.map(function(cur:PathStep) {
-		return highlightPathBetweenTwoLocations(nodeList, cur);
-	});
+	return path.map((cur:PathStep) => {
+		return highlightPathBetweenTwoLocations(nodeList, cur)
+	})
 }
 
 // highlightPathBetweenTwoLocations :: NodeList -> [Array] -> [Array]
 export function highlightPathBetweenTwoLocations(nodeList, path:PathStep) {
 
 	function addClassOnNode(nbOfClass:number):string {
-		return ` path${nbOfClass}`;
+		return ` path${nbOfClass}`
 	}
 
-	return path.map(function(cur, index, array) {
-		let node = nodeList[cur[1]].children[cur[0]];
+	return path.map((cur, index, array) => {
+		let node = nodeList[cur[1]].children[cur[0]]
 		if (index === 0 || index === array.length - 1) {
-			node.textContent = "*";
-			node.className = 'location';
+			node.textContent = "*"
+			node.className = 'location'
 		} else {
-			node.className += addClassOnNode(node.classList.length);
+			node.className += addClassOnNode(node.classList.length)
 		}
-	});
+	})
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

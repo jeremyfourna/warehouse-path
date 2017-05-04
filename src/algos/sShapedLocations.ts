@@ -1,5 +1,8 @@
-// sShapedLocationAsc :: [String] -> [String];
-function sShapedLocationAsc(locationsList) {
+import { Locations, Location, MatrixLocations } from "../interface"
+import { startAndEndAtSameALocation, locationsListToMatrixData } from "../transform"
+import { uniqLocations } from "../utils"
+
+function sShapedLocationAsc(locationsList:Locations):Locations {
 	let newList = locationsList.slice(0);
 	newList.sort(function(a, b) {
 		if (a < b) {
@@ -13,8 +16,7 @@ function sShapedLocationAsc(locationsList) {
 	return newList;
 }
 
-// sShapedLocationDesc :: [String] -> [String];
-function sShapedLocationDesc(locationsList) {
+function sShapedLocationDesc(locationsList:Locations):Locations {
 	let newList = locationsList.slice(0);
 	newList.sort(function(a, b) {
 		if (a > b) {
@@ -28,7 +30,7 @@ function sShapedLocationDesc(locationsList) {
 	return newList;
 }
 
-export function createShorterSShapedPath(sortingArea, locationsList, functionToApply) {
-	const pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(locationsList)));
+export function createShorterSShapedPath(sortingArea:Location, locationsList:Locations, functionToApply):MatrixLocations {
+	const pickerTour:Locations = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(locationsList)));
 	return locationsListToMatrixData(pickerTour, functionToApply);
 }
