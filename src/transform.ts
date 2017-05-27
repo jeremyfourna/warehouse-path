@@ -1,8 +1,6 @@
-import { Locations, Location, Path, MatrixLocation, MatrixLocations } from "./interface"
-
-////////////////////////////////////////////////////////////////////////
-// Transform origin picker tour to matrix data //
-//////////////////////////////////////////////////////////////////////
+/**
+* Transform picker tour made of locations to matrix data //
+*/
 
 export function locationsListToMatrixData(locationsList:Locations, functionToApply):MatrixLocations {
 	let newList = []

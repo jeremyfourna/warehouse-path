@@ -115,3 +115,10 @@ export function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocati
 	}
 	return findClosestLocation(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations)
 }
+
+
+function nbStepsForAPickerTour(pickerTour: MatrixPickerTour): number {
+  return pickerTour.reduce((prev: number, cur: number[]) => {
+    return prev + cur.length
+  }, 0)
+}
