@@ -1,7 +1,5 @@
-import { Locations, Location, MatrixLocation } from "./interface"
-import { createWarehouseMatrix } from "./warehouse"
-import { ellipseAgainstSShapedOnManyBatchesDisplay } from "./testAlgos"
-import { drawWarehouse } from "./display"
+const createWarehouseMatrix = require('src/warehouse').createWarehouseMatrix
+const ellipseAgainstSShapedOnManyBatchesDisplay = require('src/testAlgos').ellipseAgainstSShapedOnManyBatchesDisplay
 
 /////////////////////////////////////////////////////
 // Create your warehouse matrix //
@@ -29,7 +27,7 @@ const sortingArea: Location = "MZ1-2444A01";
 // Define your custom function to transform your locations into matrix data point //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function wwLocationToMatrixData(location: Location): MatrixLocation {
+function wwLocationToMatrixData(location) {
     let val: string = location.slice(4, 11);
     let xAxis: number = Number(val.slice(0, 2)) * 3 - 3;
     let yAxis: number = Number(val.slice(2, 4));

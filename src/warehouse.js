@@ -4,16 +4,10 @@ const R = require('ramda')
  * Inverse of the R.isNil function.
  * @function
  * @name isNotNil
+ * @param a
+ * @returns {boolean}
  */
 const isNotNil = R.complement(R.isNil)
-
-// A matrix looks like this : 0 is a walkable location  1 is a wall (not walkable)
-/* [
-	[0, 0, 0, 0, 0],
-	[0, 0, 1, 0, 0],
-	[0, 0, 1, 0, 0],
-	[0, 0, 0, 0, 0]
-] */
 
 
 /**
@@ -22,6 +16,15 @@ const isNotNil = R.complement(R.isNil)
  * @name createWarehouseMatrix
  * @param {number} numberOfRackInAisle - The number of racks in an aisle.
  * @param {number} numberOfAisleInWarehouse - The author of the book.
+ * @returns {number[][]} 2D Matrix
+ * A matrix looks like this : 0 is a walkable location  1 is a wall (not walkable)
+ *	[
+ *		[0, 0, 0, 0, 0],
+ *		[0, 0, 1, 0, 0],
+ *		[0, 0, 1, 0, 0],
+ *		[0, 0, 0, 0, 0]
+ *	]
+
  */
 // createWarehouseMatrix :: (number, number, [number]) -> Matrix
 function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, listOfSeparation) {
