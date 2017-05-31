@@ -14,8 +14,8 @@ const isNotNil = R.complement(R.isNil)
  * Represents a warehouse matrix.
  * @function
  * @name createWarehouseMatrix
- * @param {number} numberOfRackInAisle - The number of racks in an aisle.
  * @param {number} numberOfAisleInWarehouse - The author of the book.
+ * @param {number} numberOfRackInAisle - The number of racks in an aisle.
  * @returns {number[][]} 2D Matrix
  * A matrix looks like this : 0 is a walkable location  1 is a wall (not walkable)
  *	[
@@ -27,7 +27,7 @@ const isNotNil = R.complement(R.isNil)
 
  */
 // createWarehouseMatrix :: (number, number, [number]) -> Matrix
-function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, listOfSeparation) {
+function createWarehouseMatrix(numberOfAisleInWarehouse, numberOfRackInAisle, listOfSeparation) {
 
 	// createMatrix :: (number, number, [number], number, number, Matrix )-> Matrix
 	function createMatrix(startHeight, startWidth, listOfSeparation, height = 0, width = 0, matrix = []) {
@@ -60,11 +60,11 @@ function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, li
 	function defineWidthWithWalls(originalWidth) {
 		// The wall are located every two aisles like this (a = aisle  | = wall) :
 		// a : a | a : a | a : a | . : . | . : . | n : n
-		return R.ifElse(
-			R.lte(originalWidth, 2),
-			R.identity(originalWidth),
-			Math.round(R.add(R.dec(R.divide(originalWidth, 2)), originalWidth))
-		)
+		if (R.lte(originalWidth, 2)) {
+			return originalWidth
+		} else {
+			return Math.round(R.add(R.dec(R.divide(originalWidth, 2)), originalWidth))
+		}
 	}
 
 	// isNegativeValuesInArray :: [number] -> [number]
@@ -75,8 +75,8 @@ function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, li
 	// Check parameters
 	if (R.lte(numberOfRackInAisle, 0)) {
 		return new Error(`numberOfRackInAisle should be > 0  the value passed was ${numberOfRackInAisle}`)
-	} else if (R.complement(R.equals(R.modulo(numberOfRackInAisle, 2), 0))) {
-		return new Error(`numberOfRackInAisle should be even  the value passed was ${numberOfRackInAisle}`)
+	} else if (R.not(R.equals(R.modulo(numberOfRackInAisle, 2), 0))) {
+		return new Error(`numberOfRackInAisle should be even the value passed was ${numberOfRackInAisle}`)
 	} else if (R.lte(numberOfAisleInWarehouse, 0)) {
 		return new Error(`numberOfAisleInWarehouse should be > 0  the value passed was ${numberOfAisleInWarehouse}`)
 	} else if (R.isNil(listOfSeparation.length)) {
@@ -86,8 +86,8 @@ function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, li
 	}
 
 	// Round numberOfRackInAisle and numberOfAisleInWarehouse to prevent errors
-	numberOfRackInAisle = Math.round(numberOfRackInAisle)
-	numberOfAisleInWarehouse = Math.round(numberOfAisleInWarehouse)
+	numberOfAisleInWarehouseRounded = Math.round(numberOfAisleInWarehouse)
+	numberOfRackInAisleRounded = Math.round(numberOfRackInAisle)
 
 	// We assume inside an aisle the racks are located in front of each other
 	// 1 : 2
@@ -97,12 +97,12 @@ function createWarehouseMatrix(numberOfRackInAisle, numberOfAisleInWarehouse, li
 	// . : .
 	// n : n
 	//
-	// So we need to divide the numberOfRackInAisle by two to respect the real warehouse height
-	numberOfRackInAisle = R.divide(numberOfRackInAisle, 2)
+	// So we need to divide the numberOfRackInAisleRounded by two to respect the real warehouse height
+	numberOfRackInAisleFaced = R.divide(numberOfRackInAisleRounded, 2)
 		// We also need to multiply numberOfAisleInWarehouse by 2 to be able to place on the page the racks in front of each other
-	numberOfAisleInWarehouse = R.multiply(numberOfAisleInWarehouse, 2)
+	numberOfAisleInWarehouseFaced = R.multiply(numberOfAisleInWarehouseRounded, 2)
 
-	return createMatrix(numberOfRackInAisle, defineWidthWithWalls(numberOfAisleInWarehouse), listOfSeparation)
+	return createMatrix(numberOfRackInAisleFaced, defineWidthWithWalls(numberOfAisleInWarehouseFaced), listOfSeparation)
 }
 
 

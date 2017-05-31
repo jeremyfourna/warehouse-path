@@ -5,7 +5,7 @@ const ellipseAgainstSShapedOnManyBatchesDisplay = require('src/testAlgos').ellip
 // Create your warehouse matrix //
 ///////////////////////////////////////////////////
 
-let matrix = createWarehouseMatrix(44, 36, [10]);
+let matrix = createWarehouseMatrix(36, 44, [10]);
 
 //////////////////////////////////////////////////////////////////////
 // Define your picker tour via your locations //
