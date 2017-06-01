@@ -1,17 +1,14 @@
-const createWarehouseMatrix = require('src/warehouse').createWarehouseMatrix
-const ellipseAgainstSShapedOnManyBatchesDisplay = require('src/testAlgos').ellipseAgainstSShapedOnManyBatchesDisplay
-
 /////////////////////////////////////////////////////
 // Create your warehouse matrix //
 ///////////////////////////////////////////////////
 
-let matrix = createWarehouseMatrix(36, 44, [10]);
+let matrix = createWarehouseMatrix(44, 36, [10]);
 
 //////////////////////////////////////////////////////////////////////
 // Define your picker tour via your locations //
 ////////////////////////////////////////////////////////////////////
 
-let pickerTour: Locations = ["MZ1-0115A03", "MZ1-0122A01", "MZ1-0332A03", "MZ1-2531A03", "MZ1-2813D05", "MZ1-2816D04", "MZ1-2913D05", "MZ1-3019D01", "MZ1-3334A02", "MZ1-3341A02", "MZ1-3517A03", "MZ1-3529A01"];
+let pickerTour = ["MZ1-0115A03", "MZ1-0122A01", "MZ1-0332A03", "MZ1-2531A03", "MZ1-2813D05", "MZ1-2816D04", "MZ1-2913D05", "MZ1-3019D01", "MZ1-3334A02", "MZ1-3341A02", "MZ1-3517A03", "MZ1-3529A01"];
 //pickerTour = ["MZ1-2531A03", "MZ1-2813D05", "MZ1-3019D01", "MZ1-0332A03", "MZ1-0719A03", "MZ1-0719A03", "MZ1-0910A02", "MZ1-0919A03", "MZ1-2708A03", "MZ1-2709A01", "MZ1-2714D04", "MZ1-2723D03", "MZ1-2724D05", "MZ1-2903A02", "MZ1-2938A02", "MZ1-3140A02", "MZ1-2910A02", "MZ1-2910A02", "MZ1-2542A02", "MZ1-2705A01", "MZ1-2739A03"];
 //pickerTour = ["MZ1-3104A03", "MZ1-3105A01", "MZ1-3110A03", "MZ1-3137A01", "MZ1-3204D05", "MZ1-3309A03", "MZ1-3312A01", "MZ1-3315A03", "MZ1-3316A02", "MZ1-3317A01", "MZ1-3338A02", "MZ1-3204D05", "MZ1-3312A01", "MZ1-2934A03", "MZ1-3103A02", "MZ1-3136D05", "MZ1-3305A03", "MZ1-3305A03", "MZ1-3328A03", "MZ1-3203D02", "MZ1-3305A03"];
 //pickerTour = ["MZ1-0939A02", "MZ1-1442D05", "MZ1-2308D01", "MZ1-3038D04"];
@@ -21,55 +18,57 @@ let pickerTour: Locations = ["MZ1-0115A03", "MZ1-0122A01", "MZ1-0332A03", "MZ1-2
 // Define your starting and/or ending point //
 ///////////////////////////////////////////////////////////////////
 
-const sortingArea: Location = "MZ1-2444A01";
+const sortingArea = "MZ1-2444A01";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define your custom function to transform your locations into matrix data point //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function wwLocationToMatrixData(location) {
-    let val: string = location.slice(4, 11);
-    let xAxis: number = Number(val.slice(0, 2)) * 3 - 3;
-    let yAxis: number = Number(val.slice(2, 4));
+// westwingLocationToMatrixData :: String -> [Number, Number]
+function westwingLocationToMatrixData(location) {
+	var val = location.slice(4, 11);
+	var xAxis = Number(val.slice(0, 2)) * 3 - 3;
+	var yAxis = Number(val.slice(2, 4));
 
-    if (yAxis % 2 === 0) {
-        xAxis += 1;
-        yAxis /= 2;
-    } else {
-        yAxis = (yAxis + 1) / 2;
-    }
+	if (yAxis % 2 === 0) {
+		xAxis += 1;
+		yAxis /= 2;
+	} else {
+		yAxis = (yAxis + 1) / 2;
+	}
 
-    return [xAxis, yAxis];
+	return [xAxis, yAxis];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // If you want to parse a big list of picker tour batches, define your function here //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function parseBigDataBatches(bigListOfBatches: Locations): Locations[] {
-    let listOfBatches = [];
-    let previous = undefined;
-    let tempPickerTour = [];
-    bigListOfBatches.map(function(cur) {
-        if (cur[0] !== "M" || cur[1] !== "Z" || cur[2] !== "1") {
-            return;
-        }
-        if (previous === undefined) {
-            tempPickerTour.push(cur);
-            return previous = cur;
-        } else if (cur >= previous) {
-            tempPickerTour.push(cur);
-            return previous = cur;
-        } else {
-            if (tempPickerTour.length > 4) {
-                listOfBatches.push(tempPickerTour);
-            }
-            tempPickerTour = [];
-            return previous = undefined;
-        }
-    });
-    listOfBatches.push(tempPickerTour);
-    return listOfBatches;
+// parseBigDataBatches :: [String] -> [Array]
+function parseBigDataBatches(bigListOfBatches) {
+	let listOfBatches = [];
+	let previous = undefined;
+	let tempPickerTour = [];
+	bigListOfBatches.map(function(cur) {
+		if (cur[0] !== "M" || cur[1] !== "Z" || cur[2] !== "1") {
+			return;
+		}
+		if (previous === undefined) {
+			tempPickerTour.push(cur);
+			return previous = cur;
+		} else if (cur >= previous) {
+			tempPickerTour.push(cur);
+			return previous = cur;
+		} else {
+			if (tempPickerTour.length > 4) {
+				listOfBatches.push(tempPickerTour);
+			}
+			tempPickerTour = [];
+			return previous = undefined;
+		}
+	});
+	listOfBatches.push(tempPickerTour);
+	return listOfBatches;
 }
 
 
@@ -78,22 +77,22 @@ function parseBigDataBatches(bigListOfBatches: Locations): Locations[] {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Event to display the next location to go in the HTML
-$('#drawNextLocation').on('click', () => {
-    const nbLocations: number = Number($(this).attr('data-nblocations'));
-    $(this).attr('data-nblocations', nbLocations + 1);
+$('#drawNextLocation').on('click', function() {
+	const nbLocations = Number($(this).attr('data-nblocations'));
+	$(this).attr('data-nblocations', nbLocations + 1);
 
-    //////////////////////////////////////////////////////////
-    // Call your function to execute here //
-    /////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+	// Call your function to execute here //
+	/////////////////////////////////////////////////////////
 
-    return ellipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, wwLocationToMatrixData, nbLocations, true);
+	return testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData, nbLocations, true);
 });
 
 //////////////////////////////////////////////////////////////////
 // Init the warehouse display, if you want //
 ////////////////////////////////////////////////////////////////
-let warehouse = drawWarehouse(matrix);
+//let warehouse = drawWarehouse(matrix);
 
-ellipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, wwLocationToMatrixData);
-//console.log(testEllipseAgainstSShapedOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea, wwLocationToMatrixData));
-//testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea, wwLocationToMatrixData);
+//testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData);
+//console.log(testEllipseAgainstSShapedOnManyBatchesReduce(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData));
+testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData);
