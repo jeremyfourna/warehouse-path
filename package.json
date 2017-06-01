@@ -4,7 +4,7 @@
   "description": "Lib to find the best picker tour in warehouse",
   "main": "dist/warehouse-path.js",
   "scripts": {
-    "test": "mocha"
+    "test": "nyc mocha --timeout=3000"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.1",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "nyc": "^11.0.1"
   }
 }
