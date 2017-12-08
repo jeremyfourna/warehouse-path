@@ -26,18 +26,18 @@ const sortingArea = "MZ1-2444A01";
 
 // westwingLocationToMatrixData :: String -> [Number, Number]
 function westwingLocationToMatrixData(location) {
-	var val = location.slice(4, 11);
-	var xAxis = Number(val.slice(0, 2)) * 3 - 3;
-	var yAxis = Number(val.slice(2, 4));
+  var val = location.slice(4, 11);
+  var xAxis = Number(val.slice(0, 2)) * 3 - 3;
+  var yAxis = Number(val.slice(2, 4));
 
-	if (yAxis % 2 === 0) {
-		xAxis += 1;
-		yAxis /= 2;
-	} else {
-		yAxis = (yAxis + 1) / 2;
-	}
+  if (yAxis % 2 === 0) {
+    xAxis += 1;
+    yAxis /= 2;
+  } else {
+    yAxis = (yAxis + 1) / 2;
+  }
 
-	return [xAxis, yAxis];
+  return [xAxis, yAxis];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,29 +46,29 @@ function westwingLocationToMatrixData(location) {
 
 // parseBigDataBatches :: [String] -> [Array]
 function parseBigDataBatches(bigListOfBatches) {
-	let listOfBatches = [];
-	let previous = undefined;
-	let tempPickerTour = [];
-	bigListOfBatches.map(function(cur) {
-		if (cur[0] !== "M" || cur[1] !== "Z" || cur[2] !== "1") {
-			return;
-		}
-		if (previous === undefined) {
-			tempPickerTour.push(cur);
-			return previous = cur;
-		} else if (cur >= previous) {
-			tempPickerTour.push(cur);
-			return previous = cur;
-		} else {
-			if (tempPickerTour.length > 4) {
-				listOfBatches.push(tempPickerTour);
-			}
-			tempPickerTour = [];
-			return previous = undefined;
-		}
-	});
-	listOfBatches.push(tempPickerTour);
-	return listOfBatches;
+  let listOfBatches = [];
+  let previous = undefined;
+  let tempPickerTour = [];
+  bigListOfBatches.map(function(cur) {
+    if (cur[0] !== "M" || cur[1] !== "Z" || cur[2] !== "1") {
+      return;
+    }
+    if (previous === undefined) {
+      tempPickerTour.push(cur);
+      return previous = cur;
+    } else if (cur >= previous) {
+      tempPickerTour.push(cur);
+      return previous = cur;
+    } else {
+      if (tempPickerTour.length > 4) {
+        listOfBatches.push(tempPickerTour);
+      }
+      tempPickerTour = [];
+      return previous = undefined;
+    }
+  });
+  listOfBatches.push(tempPickerTour);
+  return listOfBatches;
 }
 
 
@@ -78,14 +78,14 @@ function parseBigDataBatches(bigListOfBatches) {
 
 // Event to display the next location to go in the HTML
 $('#drawNextLocation').on('click', function() {
-	const nbLocations = Number($(this).attr('data-nblocations'));
-	$(this).attr('data-nblocations', nbLocations + 1);
+  const nbLocations = Number($(this).attr('data-nblocations'));
+  $(this).attr('data-nblocations', nbLocations + 1);
 
-	//////////////////////////////////////////////////////////
-	// Call your function to execute here //
-	/////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
+  // Call your function to execute here //
+  /////////////////////////////////////////////////////////
 
-	return testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData, nbLocations, true);
+  return testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, parseBigDataBatches(pickerTour), sortingArea, westwingLocationToMatrixData, nbLocations, true);
 });
 
 //////////////////////////////////////////////////////////////////
