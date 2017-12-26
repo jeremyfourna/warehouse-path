@@ -1,6 +1,6 @@
 const R = require('ramda');
 
-const { isNaN } = require('utils');
+const { isNaN } = require('./utils');
 
 
 /**
@@ -23,22 +23,44 @@ function createWarehouseMatrix(racksInAisle, aislesInWH, listOfSeparation) {
 // createMatrix :: Number -> Number -> [Number] -> Number -> Number -> Array -> [Array]
 function createMatrix(racksInAisle, aislesInWH, listOfSeparation, height = 0, width = 0, matrix = []) {
   // Walkability matrix. Zero is walkable, One is not
+
+  // Are we at the end of the aisle height ?
   if (R.gt(height, racksInAisle)) {
+
     return R.append(R.repeat(0, aislesInWH), matrix);
+
+    // Are we at the end of the warehouse ?
   } else if (R.gte(width, aislesInWH)) {
+
     return createMatrix(racksInAisle, aislesInWH, listOfSeparation, R.inc(height), 0, matrix);
+
+    // We are still building the warehouse matrix
   } else {
+
+    // Are we at the beggining of the aisle height
     if (R.equals(height, 0)) {
+
       const newMatrix = R.append(R.repeat(0, aislesInWH), matrix);
       return createMatrix(racksInAisle, aislesInWH, listOfSeparation, R.inc(height), width, newMatrix);
+
+      // Is the current height defined inside the matrix
     } else if (R.isNil(R.nth(height, matrix))) {
+
       const newMatrix = R.append([], matrix);
       return createMatrix(racksInAisle, aislesInWH, listOfSeparation, height, width, newMatrix);
+
+      // Define if it is a wall or a walkable axis
     } else {
+
+      // Should the current width be a wall ?
       if (R.equals(R.modulo(R.inc(width), 3), 0)) {
+
         const newMatrix = R.adjust(R.append(1), height, matrix);
         return createMatrix(racksInAisle, aislesInWH, listOfSeparation, height, R.inc(width), newMatrix);
+
+        // Then it should be a walkable  width
       } else {
+
         const newMatrix = R.adjust(R.append(0), height, matrix);
         return createMatrix(racksInAisle, aislesInWH, listOfSeparation, height, R.inc(width), newMatrix);
       }
@@ -79,13 +101,14 @@ function racksFaced(racksNumber) {
   }
 }
 
-// isNegativeValuesInArray :: [Number] -> [Number]
-function isNegativeValuesInArray(list) {
+// negativeValues :: [Number] -> [Number]
+function negativeValues(list) {
   return R.filter(R.lt(R.__, 0), list);
 }
 
 function checkListOfSeparation(list) {
-  if (R.isNil(list) || R.length(isNegativeValuesInArray(list)) > 0) {
+
+  if (R.isNil(list) || R.length(negativeValues(list)) > 0) {
     throw new Error(`checkListOfSeparation : parameter must be an Array of positive numbers but parameter was ${list}`);
   } else {
     return list;
@@ -97,5 +120,5 @@ exports.aislesWithWalls = aislesWithWalls;
 exports.checkListOfSeparation = checkListOfSeparation;
 exports.createMatrix = createMatrix;
 exports.createWarehouseMatrix = createWarehouseMatrix;
-exports.isNegativeValuesInArray = isNegativeValuesInArray;
+exports.negativeValues = negativeValues;
 exports.racksFaced = racksFaced;
