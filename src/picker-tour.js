@@ -1,16 +1,17 @@
 const R = require('ramda');
+const PF = require('pathfinding');
 const { nbSteps } = require('./utils');
 
 //////////////////////////////////////////////////
 // Transform origin picker tour to matrix data //
 ////////////////////////////////////////////////
 
-// locationsListToMatrixData :: Function -> [String] -> Function -> [Array]
+// locationsListToMatrixData :: Function [String] -> [Array]
 function locationsListToMatrixData(functionToApply, locationsList) {
   return R.map(functionToApply, locationsList)
 }
 
-// locationToMatrixData :: Function -> String -> Function -> [Array]
+// locationToMatrixData :: Function String -> [Array]
 function locationToMatrixData(functionToApply, location) {
   return functionToApply(location);
 }
@@ -19,97 +20,52 @@ function locationToMatrixData(functionToApply, location) {
 // Add starting and/or ending point to the picker tour //
 ////////////////////////////////////////////////////////
 
-// startAndEndAtSameALocation :: String -> [String] -> [String]
+// startAndEndAtSameALocation :: String [String] -> [String]
 function startAndEndAtSameALocation(location, locationsList) {
   return endAtALocation(location, startFromALocation(location, locationsList));
 }
 
-// startFromALocation :: String -> [String] -> [String]
+// startFromALocation :: String [String] -> [String]
 function startFromALocation(startingLocation, locationsList) {
   return R.prepend(startingLocation, locationsList);
 }
 
-// endAtALocation :: String -> [String] -> [String]
+// endAtALocation :: String [String] -> [String]
 function endAtALocation(endingLocation, locationsList) {
   return R.append(endingLocation, locationsList);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Functions responsible to display the picker tour on the page //
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-// highlightPathBetweenManyLocations :: NodeList -> [Array] -> [Array]
-function highlightPathBetweenManyLocations(nodeList, path) {
-  return path.map(function(cur) {
-    return highlightPathBetweenTwoLocations(nodeList, cur);
-  });
-}
-
-// highlightPathBetweenTwoLocations :: NodeList -> [Array] -> [Array]
-function highlightPathBetweenTwoLocations(nodeList, path) {
-
-  // addClassOnNode :: Number -> String
-  function addClassOnNode(nbOfClass) {
-    return ` path${nbOfClass}`;
-  }
-
-  return path.map(function(cur, index, array) {
-    let node = nodeList[cur[1]].children[cur[0]];
-    if (index === 0 || index === array.length - 1) {
-      node.textContent = "*";
-      node.className = 'location';
-    } else {
-      node.className += addClassOnNode(node.classList.length);
-    }
-  });
-}
-
-// pickerTourInSequence :: [Array] -> Number -> [Array]
-function pickerTourInSequence(pickerTour, nbLocations) {
-  if (nbLocations > pickerTour.length) {
-    return pickerTour;
-  } else {
-    const newPickerTour = pickerTour.slice(0, nbLocations);
-    return newPickerTour;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions responsible to create a path between 2 or more matrix data points //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// createPathBetweenManyLocations :: warehouseMatrix -> [Array] -> [Array]
-function createPathBetweenManyLocations(matrix, locations) {
-  let path = [];
-  let previousLocation = undefined;
-  locations.map(function(cur, index) {
-    if (previousLocation === undefined) {
-      return previousLocation = cur;
-    } else {
-      path.push(createPathBetweenTwoLocations(matrix, previousLocation, cur));
-      return previousLocation = cur;
-    }
-  });
-  // Add the path to return to the point of origin
-  path.push(createPathBetweenTwoLocations(matrix, locations[locations.length - 1], locations[0]));
-  return path;
+// pathBtwManyLocations :: warehouseMatrix [Array] -> [Array]
+function pathBtwManyLocations(matrix, locations) {
+  const path = R.reduce((prev, cur) => {
+    return [R.append(pathBtwTwoLocations(matrix, R.last(prev), cur), R.head(prev)), cur];
+  }, [
+    [], undefined
+
+  ], locations);
+  // Add the path to return to the poin
+  return R.append(pathBtwTwoLocations(matrix, R.last(locations), R.head(locations)));
 }
 
-// createPathBetweenTwoLocations :: warehouseMatrix -> [Number, Number] -> [Number, Number] -> [Array]
-function createPathBetweenTwoLocations(matrix, originLocation, destinationLocation) {
+// pathBtwTwoLocations :: warehouseMatrix [Number, Number] [Number, Number] -> [Array]
+function pathBtwTwoLocations(matrix, origin, destination) {
   const grid = new PF.Grid(matrix);
   const finder = new PF.AStarFinder({
     allowDiagonal: true
   });
-  return finder.findPath(originLocation[0], originLocation[1], destinationLocation[0], destinationLocation[1], grid);
+  return finder.findPath(...origin, ...destination, grid);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Function that will a matrix between all the locations of a picker tour //
-// Should be used with an algo function to find best path                    //
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+// Function that will define a matrix between all the locations of a picker tour //
+// Should be used with an algo function to find best path                       //
+/////////////////////////////////////////////////////////////////////////////////
 
-// createMatrixWithShortestPathBetweenLocations :: warehouseMatrix -> [String] -> Function -> Object
+// createMatrixWithShortestPathBetweenLocations :: warehouseMatrix [String] Function -> Object
 function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functionToApply) {
   // pickerTour should also contain the point of origin/return
   let ref = [];
@@ -125,7 +81,7 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
   ref.map(function(cur) {
     let pathForEachLocations = [];
     ref.map(function(cur1) {
-      const path = createPathBetweenTwoLocations(matrix, cur.coordinates, cur1.coordinates);
+      const path = pathBtwTwoLocations(matrix, cur.coordinates, cur1.coordinates);
       return pathForEachLocations.push({
         name: cur1.name,
         coordinates: cur1.coordinates,
@@ -149,9 +105,9 @@ function createMatrixWithShortestPathBetweenLocations(matrix, pickerTour, functi
 function testClosestNeightbourAgainstSShapedOnManyBatchesReduce(matrix, listOfBatches, sortingArea, functionToApply) {
   return listOfBatches.reduce(function(prev, cur, index) {
     // S-Shaped
-    let sShaped = nbSteps(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
+    let sShaped = nbSteps(pathBtwManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
     // Shortest path
-    let shortest = nbSteps(createPathBetweenManyLocations(matrix, createShortestPath(matrix, sortingArea, cur, functionToApply)));
+    let shortest = nbSteps(pathBtwManyLocations(matrix, createShortestPath(matrix, sortingArea, cur, functionToApply)));
 
     console.log(`ClosestNeighbour against S-Shaped : Result ${index} = nbSteps sShaped ${sShaped} nbSteps shortest  ${shortest} gain ${shortest - sShaped} so ${_.round((shortest - sShaped) / sShaped * 100, 2)} %`);
 
@@ -167,9 +123,9 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesReduce(matrix, listOfBa
 function testEllipseAgainstSShapedOnManyBatchesReduce(matrix, listOfBatches, sortingArea, functionToApply) {
   return listOfBatches.reduce(function(prev, cur, index) {
     // S-Shaped
-    let sShaped = nbSteps(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
+    let sShaped = nbSteps(pathBtwManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
     // Shortest via ellipse
-    let ellipse = nbSteps(createPathBetweenManyLocations(matrix, createShortestPathViaEllipse(matrix, sortingArea, cur, functionToApply)));
+    let ellipse = nbSteps(pathBtwManyLocations(matrix, createShortestPathViaEllipse(matrix, sortingArea, cur, functionToApply)));
 
     console.log(`Ellipse against S-Shaped : Result ${index} = nbSteps sShaped ${sShaped} nbSteps ellipse  ${ellipse} gain ${ellipse - sShaped} so ${_.round((ellipse - sShaped) / sShaped * 100, 2)} %`);
 
@@ -193,7 +149,7 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesDisplay(matrix, listOfB
     highlightPathBetweenManyLocations(
       nodeMatrix,
       pickerTourInSequence(
-        createPathBetweenManyLocations(
+        pathBtwManyLocations(
           matrix,
           createShorterSShapedPath(
             sortingArea,
@@ -209,7 +165,7 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesDisplay(matrix, listOfB
     highlightPathBetweenManyLocations(
       nodeMatrix1,
       pickerTourInSequence(
-        createPathBetweenManyLocations(
+        pathBtwManyLocations(
           matrix,
           createShortestPath(
             matrix,
@@ -237,7 +193,7 @@ function testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, listOfBatches, so
     highlightPathBetweenManyLocations(
       nodeMatrix,
       pickerTourInSequence(
-        createPathBetweenManyLocations(
+        pathBtwManyLocations(
           matrix,
           createShorterSShapedPath(
             sortingArea,
@@ -253,7 +209,7 @@ function testEllipseAgainstSShapedOnManyBatchesDisplay(matrix, listOfBatches, so
     highlightPathBetweenManyLocations(
       nodeMatrix1,
       pickerTourInSequence(
-        createPathBetweenManyLocations(
+        pathBtwManyLocations(
           matrix,
           createShortestPathViaEllipse(
             matrix,
@@ -276,9 +232,9 @@ function testClosestNeightbourAgainstSShapedOnManyBatchesResultForCSV(matrix, li
     let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
 
     // S-Shaped
-    let sShaped = nbSteps(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
+    let sShaped = nbSteps(pathBtwManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
     // Shortest path
-    let shortest = nbSteps(createPathBetweenManyLocations(matrix, createShortestPath(matrix, sortingArea, cur, functionToApply)));
+    let shortest = nbSteps(pathBtwManyLocations(matrix, createShortestPath(matrix, sortingArea, cur, functionToApply)));
 
     let resultForABatch = {
       pickerTourLength: pickerTour.length,
@@ -304,9 +260,9 @@ function testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, listOfBatche
     let pickerTour = startAndEndAtSameALocation(sortingArea, sShapedLocationAsc(uniqLocations(cur)));
 
     // S-Shaped
-    let sShaped = nbSteps(createPathBetweenManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
+    let sShaped = nbSteps(pathBtwManyLocations(matrix, createShorterSShapedPath(sortingArea, cur, functionToApply)));
     // Shortest via ellipse
-    let ellipse = nbSteps(createPathBetweenManyLocations(matrix, createShortestPathViaEllipse(matrix, sortingArea, cur, functionToApply)));
+    let ellipse = nbSteps(pathBtwManyLocations(matrix, createShortestPathViaEllipse(matrix, sortingArea, cur, functionToApply)));
 
     let resultForABatch = {
       pickerTourLength: pickerTour.length,
@@ -327,3 +283,4 @@ function testEllipseAgainstSShapedOnManyBatchesResultForCSV(matrix, listOfBatche
 
 exports.startFromALocation = startFromALocation;
 exports.endAtALocation = endAtALocation;
+exports.startAndEndAtSameALocation = startAndEndAtSameALocation;
