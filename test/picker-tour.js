@@ -1,34 +1,25 @@
 const assert = require('chai').assert;
 const R = require('ramda');
 
-const nbStepsForAPickerTour = require('../src/picker-tour').nbStepsForAPickerTour;
+const {
+  startFromALocation,
+  endAtALocation
+} = require('../src/picker-tour');
 
 describe('picker-tour.js', () => {
-	describe('nbStepsForAPickerTour', () => {
-		it('return 1 for [[0]]', () => {
-			const test = [
-				[0]
-			];
+  describe('startFromALocation', () => {
+    it('Case n°1', () => {
+      const list = [1, 2, 3];
 
-			assert.isNumber(nbStepsForAPickerTour(test));
-			assert.equal(nbStepsForAPickerTour(test), 1);
-		});
-		it('return 0 for [[]]', () => {
-			const test = [
-				[]
-			];
+      assert.deepEqual(startFromALocation(10, list), [10, 1, 2, 3]);
+    });
+  });
 
-			assert.isNumber(nbStepsForAPickerTour(test));
-			assert.equal(nbStepsForAPickerTour(test), 0);
-		});
-		it('return 4 for [[0,0], [0,0]]', () => {
-			const test = [
-				[0, 0],
-				[0, 0]
-			];
+  describe('endAtALocation', () => {
+    it('Case n°1', () => {
+      const list = [1, 2, 3];
 
-			assert.isNumber(nbStepsForAPickerTour(test));
-			assert.equal(nbStepsForAPickerTour(test), 4);
-		});
-	});
+      assert.deepEqual(endAtALocation(10, list), [1, 2, 3, 10]);
+    });
+  });
 });
