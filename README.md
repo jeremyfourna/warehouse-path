@@ -186,8 +186,6 @@ This will render into the `DOM` with the help of `drawWarehouse`. _The first and
 
 ## Performance between `S-Shaped` and `closest neighbour` algos
 
-This graph was made with [Westwing](https://www.westwing.de/) data.
-
 ![alt text](public/closestNeighbour_sShaped.png "Simple warehouse configuration")
 
 * S-Shape = `S-Shaped`
@@ -197,8 +195,6 @@ This graph was made with [Westwing](https://www.westwing.de/) data.
 The `closest neighbour` tends to performance better than the `S-Shaped` and this is even more true as the number of locations in a picker tour increase.
 
 ## Performance between `S-Shaped` and `ellipse` algos
-
-This graph was made with [Westwing](https://www.westwing.de/) data.
 
 ![alt text](public/ellipse_sShaped.png "Simple warehouse configuration")
 
