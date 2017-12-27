@@ -1,53 +1,58 @@
+const R = require('ramda');
+
+const {
+  locationsListToMatrixData,
+  matrixWithShortestPathBtwLocations,
+  pathBtwManyLocations,
+  startAndEndAtSameALocation
+} = require('../picker-tour');
+
 // shortestPathBetweenLocations :: Object -> String -> [String]
-function shortestPathBetweenLocations(matrixWithShortestPathBetweenLocations, startingPoint) {
-	// findClosestLocation :: matrixWithShortestPathBetweenLocations -> Object -> [Object]
-	function findClosestLocation(matrixWithShortestPathBetweenLocations, currentPosition, visitedLocations) {
-		let sortingDistance = matrixWithShortestPathBetweenLocations.matrix[currentPosition.indexInMatrix];
-		let closestLocation = undefined;
-		sortingDistance.sort(function(a, b) {
-			if (a.pathLength < b.pathLength) {
-				return -1;
-			} else if (a.pathLength > b.pathLength) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
-		let notInVisitedLocations = _.differenceBy(sortingDistance, visitedLocations, "name");
-		if (notInVisitedLocations.length === 0) {
-			let newList = [];
-			newList.push(matrixWithShortestPathBetweenLocations.ref[0].name);
-			return newList;
-		}
-		closestLocation = matrixWithShortestPathBetweenLocations.ref.find(function(cur) {
-			return cur.name === notInVisitedLocations[0].name;
-		});
-		visitedLocations.push(closestLocation);
-		if (visitedLocations.length !== matrixWithShortestPathBetweenLocations.ref.length) {
-			return findClosestLocation(matrixWithShortestPathBetweenLocations, closestLocation, visitedLocations);
-		} else {
-			return visitedLocations.map(function(cur) {
-				return cur.name;
-			});
-		}
-	}
+function shortestPathBetweenLocations(mWSPBL, startingPoint) {
+  // mWSPBL = matrix With Shortest Path Between Locations
+  function sortByPathLength(list) {
+    const byLength = R.ascend(R.prop('pathLength'));
 
-	let visitedLocations = [];
-	let startingPointInMatrix = matrixWithShortestPathBetweenLocations.ref.find(function(cur) {
-		return cur.name === startingPoint;
-	});
+    return R.sort(byLength, list);
+  }
+  // findClosestLocation :: mWSPBL -> Object -> [Object]
+  function findClosestLocation(mWSPBL, currentPosition, visitedLocations) {
+    // mWSPBL = matrix With Shortest Path Between Locations
+    const notEquals = R.complement(R.equals);
+    const sortingDistanceFromCurrentPosition = R.path(['matrix', R.prop('indexInMatrix', currentPosition)], mWSPBL);
+    const sortingDistanceFromCurrentPositionSorted = sortByPathLength(sortingDistanceFromCurrentPosition);
 
-	if (startingPointInMatrix === undefined) {
-		return [];
-	} else {
-		visitedLocations.push(startingPointInMatrix);
-	}
-	return findClosestLocation(matrixWithShortestPathBetweenLocations, startingPointInMatrix, visitedLocations);
+    const notInVisitedLocations = R.differenceWith(
+      (x, y) => R.equals(R.prop('name', x), R.prop('name', y)),
+      sortingDistanceFromCurrentPositionSorted,
+      visitedLocations
+    );
+
+    const closestLocation = R.find(
+      cur => R.equals(R.prop('name', cur), R.path([0, 'name'], notInVisitedLocations)),
+      R.prop('ref', mWSPBL)
+    );
+
+    const newVisitedLocations = R.append(closestLocation, visitedLocations);
+
+    if (notEquals(R.length(newVisitedLocations), R.length(R.prop('ref', mWSPBL)))) {
+      return findClosestLocation(mWSPBL, closestLocation, newVisitedLocations);
+    } else {
+      return R.append(startingPoint, R.map(R.prop('name'), visitedLocations));
+    }
+  }
+
+  const startingPointInMatrix = R.find(R.propEq('name', startingPoint), R.prop('ref', mWSPBL));
+
+  return findClosestLocation(mWSPBL, startingPointInMatrix, [startingPointInMatrix]);
 }
 
-function createShortestPath(matrix, sortingArea, locationsList, functionToApply) {
-	let pickerTour = startAndEndAtSameALocation(sortingArea, uniqLocations(locationsList));
-	let short = createMatrixWithShortestPathBetweenLocations(matrix, uniqLocations(pickerTour), functionToApply);
-	let shortestPath = shortestPathBetweenLocations(short, sortingArea);
-	return locationsListToMatrixData(shortestPath, functionToApply);
+function shortestClosestNeighbourPath(matrix, sortingArea, locationsList, functionToApply) {
+  const pickerTour = startAndEndAtSameALocation(sortingArea, R.uniq(locationsList));
+  const matrixShortestPath = matrixWithShortestPathBtwLocations(matrix, R.uniq(pickerTour), functionToApply);
+  const shortestPath = shortestPathBetweenLocations(matrixShortestPath, sortingArea);
+
+  return pathBtwManyLocations(matrix, locationsListToMatrixData(functionToApply, shortestPath));
 }
+
+exports.shortestClosestNeighbourPath = shortestClosestNeighbourPath;

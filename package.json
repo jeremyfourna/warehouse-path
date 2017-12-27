@@ -4,7 +4,8 @@
   "description": "Lib to find the best picker tour in warehouse",
   "main": "dist/warehouse-path.js",
   "scripts": {
-    "test": "nyc mocha --timeout=3000"
+    "test": "nyc mocha --timeout=3000",
+    "clean": "eslint src/ --fix"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.1",
+    "eslint": "^4.14.0",
     "mocha": "^3.4.2",
     "nyc": "^11.0.1"
   }

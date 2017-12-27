@@ -15,8 +15,8 @@ const { isNaN } = require('./utils');
  * ]
  */
 
-// createWarehouseMatrix :: Number Number [Number] -> Matrix
-function createWarehouseMatrix(racksInAisle, aislesInWH, listOfSeparation) {
+// warehouseMatrix :: Number Number [Number] -> Matrix
+function warehouseMatrix(racksInAisle, aislesInWH, listOfSeparation) {
   return createMatrix(racksFaced(racksInAisle), aislesWithWalls(aislesInWH), checkListOfSeparation(listOfSeparation));
 }
 
@@ -119,6 +119,6 @@ function checkListOfSeparation(list) {
 exports.aislesWithWalls = aislesWithWalls;
 exports.checkListOfSeparation = checkListOfSeparation;
 exports.createMatrix = createMatrix;
-exports.createWarehouseMatrix = createWarehouseMatrix;
+exports.warehouseMatrix = warehouseMatrix;
 exports.negativeValues = negativeValues;
 exports.racksFaced = racksFaced;

@@ -1,4 +1,10 @@
-const { createWarehouseMatrix } = require('./src/warehouse');
+const { warehouseMatrix } = require('./src/warehouse');
+const { nbSteps } = require('./src/utils');
+const { shortestSShapedPath } = require('./src/algos/sShapedLocations');
+const { shortestClosestNeighbourPath } = require('./src/algos/closestNeighbour');
 
 
-exports.warehouseMatrix = createWarehouseMatrix;
+exports.nbSteps = nbSteps;
+exports.shortestClosestNeighbourPath = shortestClosestNeighbourPath;
+exports.shortestSShapedPath = shortestSShapedPath;
+exports.warehouseMatrix = warehouseMatrix;
