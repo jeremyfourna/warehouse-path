@@ -1,12 +1,14 @@
 const assert = require('chai').assert;
 const R = require('ramda');
 
-const aislesWithWalls = require('../src/warehouse').aislesWithWalls;
-const checkListOfSeparation = require('../src/warehouse').checkListOfSeparation;
-const createMatrix = require('../src/warehouse').createMatrix;
-const createWarehouseMatrix = require('../src/warehouse').createWarehouseMatrix;
-const negativeValues = require('../src/warehouse').negativeValues;
-const racksFaced = require('../src/warehouse').racksFaced;
+const {
+  aislesWithWalls,
+  checkListOfSeparation,
+  createMatrix,
+  warehouseMatrix,
+  negativeValues,
+  racksFaced
+} = require('../src/warehouse');
 
 describe('warehouse.js', () => {
   describe('negativeValues', () => {
@@ -233,22 +235,22 @@ describe('warehouse.js', () => {
     });
   });
 
-  describe('createWarehouseMatrix', () => {
+  describe('warehouseMatrix', () => {
     it('for racksInAisle = 4 ; aislesInWH = 4 ; listOfSeparation = []', () => {
       const racksInAisle = 4;
       const aislesInWH = 4;
       const listOfSeparation = [];
 
-      const result = createWarehouseMatrix(racksInAisle, aislesInWH, listOfSeparation);
+      const result = warehouseMatrix(racksInAisle, aislesInWH, listOfSeparation);
 
       assert.isArray(result);
     });
-    it(`createWarehouseMatrix for racksInAisle = 4 ; aislesInWH = 4 ; listOfSeparation = [] === createMatrix for racksInAisle = 2 ; aislesInWH = 11 ; listOfSeparation = []`, () => {
+    it(`warehouseMatrix for racksInAisle = 4 ; aislesInWH = 4 ; listOfSeparation = [] === createMatrix for racksInAisle = 2 ; aislesInWH = 11 ; listOfSeparation = []`, () => {
       const racksInAisle = 4;
       const aislesInWH = 4;
       const listOfSeparation = [];
 
-      const result = createWarehouseMatrix(4, 4, []);
+      const result = warehouseMatrix(4, 4, []);
       const result1 = createMatrix(2, 11, []);
 
       assert.isArray(result);
