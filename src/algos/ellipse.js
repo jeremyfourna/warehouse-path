@@ -1,9 +1,12 @@
 const R = require('ramda');
 
 const {
+  endAtALocation,
   locationsListToMatrixData,
-  startFromALocation
+  startFromALocation,
+  pathBtwTwoLocations
 } = require('../picker-tour');
+const { shortestPathBetweenLocations } = require('./closestNeighbour');
 
 // createEllipse :: [Array] -> [Array]
 function createEllipse(locationsCoordinates) {
@@ -21,82 +24,133 @@ function createEllipse(locationsCoordinates) {
   return [yMin, xMin, yMax, xMax, center];
 }
 
-// locationsInCorner :: [Number, Number] -> [Number, Number] -> [Number, Number] -> [Array] -> [Array]
-function locationsInCorner(center, xPoint, yPoint, locationsCoordinatesInMatrix) {
-  return locationsCoordinatesInMatrix.filter(function(cur) {
-    //console.log(center, xPoint, yPoint, cur);
-    if (xPoint[0] <= yPoint[0]) {
-      if (xPoint[1] <= yPoint[1]) {
+// locationsInCorner :: [Number, Number] [Number, Number] [Number, Number] [Array] -> [Array]
+function locationsInCorner(center, xPoint, yPoint, locationsCoordinates) {
+  return R.filter(cur => {
+    if (R.lte(R.head(xPoint), R.head(yPoint))) {
+      if (R.lte(R.last(xPoint), R.last(yPoint))) {
         // lower left corner
-        // So we need the point to be under the vector from center to xPoint and before the vector from center to yPoint
-        return cur[0] <= wantToKnowXPointForY(center, yPoint, cur)[0] && cur[1] > wantToKnowYPointForX(center, xPoint, cur)[1];
+        // So we need the point to be under the vector from center to xPoint
+        // and before the vector from center to yPoint
+        return R.lte(R.head(cur), R.head(wantToKnowXPointForY(center, yPoint, cur))) &&
+          R.gt(R.last(cur), R.last(wantToKnowYPointForX(center, xPoint, cur)));
       } else {
         // upper left corner
-        // So we need the point to be above the vector from center to xPoint and before the vector from center to yPoint
-        return cur[0] <= wantToKnowXPointForY(center, yPoint, cur)[0] && cur[1] <= wantToKnowYPointForX(center, xPoint, cur)[1];
+        // So we need the point to be above the vector from center to xPoint
+        // and before the vector from center to yPoint
+        return R.lte(R.head(cur), R.head(wantToKnowXPointForY(center, yPoint, cur))) &&
+          R.lte(R.last(cur), R.last(wantToKnowYPointForX(center, xPoint, cur)));
       }
     } else {
-      if (xPoint[1] <= yPoint[1]) {
+      if (R.lte(R.last(xPoint), R.last(yPoint))) {
         // lower right corner
-        // So we need the point to be above the vector from center to xPoint and after the vector from center to yPoint
-        return cur[0] > wantToKnowXPointForY(center, yPoint, cur)[0] && cur[1] > wantToKnowYPointForX(center, xPoint, cur)[1];
+        // So we need the point to be above the vector from center to xPoint
+        // and after the vector from center to yPoint
+        return R.gt(R.head(cur), R.head(wantToKnowXPointForY(center, yPoint, cur))) &&
+          R.gt(R.last(cur), R.last(wantToKnowYPointForX(center, xPoint, cur)));
       } else {
         // upper right corner
-        // So we need the point to be under the vector from center to xPoint and after the vector from center to yPoint
-        return cur[0] > wantToKnowXPointForY(center, yPoint, cur)[0] && cur[1] <= wantToKnowYPointForX(center, xPoint, cur)[1];
+        // So we need the point to be under the vector from center to xPoint
+        // and after the vector from center to yPoint
+        return R.gt(R.head(cur), R.head(wantToKnowXPointForY(center, yPoint, cur))) &&
+          R.lte(R.last(cur), R.last(wantToKnowYPointForX(center, xPoint, cur)));
       }
     }
-  });
+  }, locationsCoordinates);
 }
 
-function locationsListInCorner(ellipseData, locationsCoordinatesInMatrix) {
-  let tempPickerTour = [];
-  // lower left corner
-  tempPickerTour.push(locationsInCorner(ellipseData[4], ellipseData[1], ellipseData[0], locationsCoordinatesInMatrix));
-  // upper left corner
-  tempPickerTour.push(locationsInCorner(ellipseData[4], ellipseData[1], ellipseData[2], locationsCoordinatesInMatrix));
-  // upper left corner
-  tempPickerTour.push(locationsInCorner(ellipseData[4], ellipseData[3], ellipseData[2], locationsCoordinatesInMatrix));
-  // lower right
-  tempPickerTour.push(locationsInCorner(ellipseData[4], ellipseData[3], ellipseData[0], locationsCoordinatesInMatrix));
-  return tempPickerTour;
+function locationsListInCorner(ellipseData, locationsCoordinates) {
+  return [
+    // lower left corner
+    locationsInCorner(R.last(ellipseData), R.nth(1, ellipseData), R.head(ellipseData), locationsCoordinates),
+    // upper left corner
+    locationsInCorner(R.last(ellipseData), R.nth(1, ellipseData), R.nth(2, ellipseData), locationsCoordinates),
+    // upper left corner
+    locationsInCorner(R.last(ellipseData), R.nth(3, ellipseData), R.nth(2, ellipseData), locationsCoordinates),
+    // lower right
+    locationsInCorner(R.last(ellipseData), R.nth(3, ellipseData), R.head(ellipseData), locationsCoordinates)
+  ];
 }
 
 // wantToKnowYPointForX :: [Number, Number] -> [Number, Number] -> [Number, Number] -> [Number, Number]
 function wantToKnowYPointForX(center, cardinal, locationCoordinates) {
-  let xDiff = cardinal[0] - center[0];
-  let yDiff = cardinal[1] - center[1];
-  let yCorrelation = yDiff / xDiff;
-  if (xDiff <= 0) {
-    //console.log("wantToKnowYPointForX xDiff <= 0", [locationCoordinates[0], Math.round(center[1] - (center[0] - locationCoordinates[0]) * yCorrelation)]);
-    return [locationCoordinates[0], Math.round(center[1] - (center[0] - locationCoordinates[0]) * yCorrelation)];
+  const xDiff = R.subtract(R.head(cardinal), R.head(center));
+  const yDiff = R.subtract(R.last(cardinal), R.last(center));
+  const yCorrelation = R.divide(yDiff, xDiff);
+  if (R.lte(xDiff, 0)) {
+    return [
+      R.head(locationCoordinates),
+      Math.round(R.subtract(
+        R.last(center),
+        R.multiply(
+          R.subtract(
+            R.head(center),
+            R.head(locationCoordinates)
+          ),
+          yCorrelation)
+      ))
+    ];
   } else {
-    //console.log("wantToKnowYPointForX xDiff > 0", [locationCoordinates[0], Math.round(center[1] + (center[0] - locationCoordinates[0]) * yCorrelation)]);
-    return [locationCoordinates[0], Math.round(center[1] + (locationCoordinates[0] - center[0]) * yCorrelation)];
+    return [
+      R.head(locationCoordinates),
+      Math.round(R.add(
+        R.last(center),
+        R.multiply(
+          R.subtract(
+            R.head(locationCoordinates),
+            R.head(center)
+          ),
+          yCorrelation)
+      ))
+    ];
   }
 }
 
 // wantToKnowXPointForY :: [Number, Number] -> [Number, Number] -> [Number, Number] -> [Number, Number]
 function wantToKnowXPointForY(center, cardinal, locationCoordinates) {
-  let xDiff = cardinal[0] - center[0];
-  let yDiff = cardinal[1] - center[1];
-  let xCorrelation = xDiff / yDiff;
-  if (yDiff <= 0) {
-    //console.log("wantToKnowXPointForY yDiff <= 0", [Math.round(center[0] - (center[1] - locationCoordinates[1]) * xCorrelation), locationCoordinates[1]]);
-    return [Math.round(center[0] - (center[1] - locationCoordinates[1]) * xCorrelation), locationCoordinates[1]];
+  const xDiff = R.subtract(R.head(cardinal), R.head(center));
+  const yDiff = R.subtract(R.last(cardinal), R.last(center));
+  const xCorrelation = R.divide(xDiff, yDiff);
+  if (R.lte(yDiff, 0)) {
+    return [
+      Math.round(R.subtract(
+        R.head(center),
+        R.multiply(
+          R.subtract(
+            R.last(center),
+            R.last(locationCoordinates)
+          ),
+          xCorrelation)
+      )),
+      R.last(locationCoordinates)
+    ];
   } else {
-    //console.log("wantToKnowXPointForY yDiff > 0", [Math.round(center[0] + (center[1] - locationCoordinates[1]) * xCorrelation), locationCoordinates[1]]);
-    return [Math.round(center[0] + (locationCoordinates[1] - center[1]) * xCorrelation), locationCoordinates[1]];
+    return [
+      Math.round(R.add(
+        R.head(center),
+        R.multiply(
+          R.subtract(
+            R.last(locationCoordinates),
+            R.last(center)
+          ),
+          xCorrelation)
+      )),
+      R.last(locationCoordinates)
+    ];
   }
 }
 
 // removeCardinalPoints :: [Array] -> [Array] -> [Array]
 function removeCardinalPoints(listOfLocationsByCardinalPoints, ellipseData) {
-  return listOfLocationsByCardinalPoints.map(function(cur) {
-    return cur.filter(function(cur1) {
-      return !_.isEqual(cur1, ellipseData[0]) && !_.isEqual(cur1, ellipseData[1]) && !_.isEqual(cur1, ellipseData[2]) && !_.isEqual(cur1, ellipseData[3]);
-    });
-  });
+  const notEquals = R.complement(R.equals);
+  return R.map(cur => {
+    return R.filter(cur1 => {
+      return notEquals(cur1, R.head(ellipseData)) &&
+        notEquals(cur1, R.nth(1, ellipseData)) &&
+        notEquals(cur1, R.nth(2, ellipseData)) &&
+        notEquals(cur1, R.nth(3, ellipseData));
+    }, cur);
+  }, listOfLocationsByCardinalPoints);
 }
 
 
@@ -116,7 +170,7 @@ function createMatrixWithShortestPathBetweenCornerLocations(matrix, startLocatio
   ref.map(function(cur) {
     let pathForEachLocations = [];
     ref.map(function(cur1) {
-      const path = createPathBetweenTwoLocations(matrix, cur.coordinates, cur1.coordinates);
+      const path = pathBtwTwoLocations(matrix, cur.coordinates, cur1.coordinates);
       return pathForEachLocations.push({
         name: cur1.name,
         coordinates: cur1.coordinates,
@@ -132,7 +186,7 @@ function createMatrixWithShortestPathBetweenCornerLocations(matrix, startLocatio
   };
 }
 
-// shortestPathViaEllipse ::
+
 function shortestPathViaEllipse(matrix, sortingArea, locationsList, functionToApply) {
   // Transform picketTour into matrix data
   const pickerTourForEllipse = locationsListToMatrixData(functionToApply, startFromALocation(sortingArea, R.uniq(locationsList)));
@@ -152,7 +206,7 @@ function shortestPathViaEllipse(matrix, sortingArea, locationsList, functionToAp
   const shortestPathMatrixCorner3 = shortestPathBetweenLocations(matrixCorner3, ellipse[2].toString());
   const shortestPathMatrixCorner4 = shortestPathBetweenLocations(matrixCorner4, ellipse[3].toString());
 
-  const finalpath = _.uniq(shortestPathMatrixCorner1.concat(shortestPathMatrixCorner2, shortestPathMatrixCorner3, shortestPathMatrixCorner4));
+  const finalpath = R.uniq(shortestPathMatrixCorner1.concat(shortestPathMatrixCorner2, shortestPathMatrixCorner3, shortestPathMatrixCorner4));
 
   let locList = finalpath.map(function(cur) {
     let newCur = cur.split(',');

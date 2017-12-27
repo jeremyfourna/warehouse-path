@@ -56,3 +56,4 @@ function shortestClosestNeighbourPath(matrix, sortingArea, locationsList, functi
 }
 
 exports.shortestClosestNeighbourPath = shortestClosestNeighbourPath;
+exports.shortestPathBetweenLocations = shortestPathBetweenLocations;

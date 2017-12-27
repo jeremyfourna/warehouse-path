@@ -99,6 +99,7 @@ function matrixWithShortestPathBtwLocations(matrix, pickerTour, functionToApply)
 exports.endAtALocation = endAtALocation;
 exports.locationsListToMatrixData = locationsListToMatrixData;
 exports.matrixWithShortestPathBtwLocations = matrixWithShortestPathBtwLocations;
+exports.pathBtwTwoLocations = pathBtwTwoLocations;
 exports.pathBtwManyLocations = pathBtwManyLocations;
 exports.startAndEndAtSameALocation = startAndEndAtSameALocation;
 exports.startFromALocation = startFromALocation;
