@@ -3,8 +3,9 @@ const R = require('ramda');
 const {
   nbSteps,
   shortestClosestNeighbourPath,
+  shortestPathViaEllipse,
   shortestSShapedPath,
-  warehouseMatrix
+  warehouseMatrix,
 } = require('../index');
 
 ///////////////////////////////////
@@ -47,3 +48,4 @@ function testLocationToMatrixData(location) {
 
 console.log('S Shaped', nbSteps(shortestSShapedPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
 console.log('Closest Neighbour', nbSteps(shortestClosestNeighbourPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
+console.log('Ellipse', shortestPathViaEllipse(matrix, sortingArea, pickerTour, testLocationToMatrixData));

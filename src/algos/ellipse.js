@@ -1,21 +1,24 @@
+const R = require('ramda');
+
+const {
+  locationsListToMatrixData,
+  startFromALocation
+} = require('../picker-tour');
+
 // createEllipse :: [Array] -> [Array]
-function createEllipse(locationsCoordinatesInMatrix) {
-  const yMax = _.minBy(locationsCoordinatesInMatrix, 1);
-  const xMax = _.maxBy(locationsCoordinatesInMatrix, 0);
-  const yMin = _.maxBy(locationsCoordinatesInMatrix, 1);
-  const xMin = _.minBy(locationsCoordinatesInMatrix, 0);
-  const center = [Math.round((xMin[0] + xMax[0]) / 2), Math.round((yMin[1] + yMax[1]) / 2)];
+function createEllipse(locationsCoordinates) {
+  const xMin = R.reduce(R.minBy(R.head), [Infinity, 0], locationsCoordinates);
+  const xMax = R.reduce(R.maxBy(R.head), [-1, 0], locationsCoordinates);
+
+  const yMin = R.reduce(R.maxBy(R.last), [0, -1], locationsCoordinates);
+  const yMax = R.reduce(R.minBy(R.last), [0, Infinity], locationsCoordinates);
+
+  const center = [
+    Math.round(R.divide(R.add(R.head(xMin), R.head(xMax)), 2)),
+    Math.round(R.divide(R.add(R.last(yMin), R.last(yMax)), 2))
+  ];
 
   return [yMin, xMin, yMax, xMax, center];
-}
-
-// displayEllipse :: NodeList -> Array -> Array
-function displayEllipse(nodeMatrix, ellipse) {
-  return ellipse.map(function(cur) {
-    let node = nodeMatrix[cur[1]].children[cur[0]];
-    node.textContent = 'e';
-    node.className = 'ellipse';
-  });
 }
 
 // locationsInCorner :: [Number, Number] -> [Number, Number] -> [Number, Number] -> [Array] -> [Array]
@@ -129,10 +132,14 @@ function createMatrixWithShortestPathBetweenCornerLocations(matrix, startLocatio
   };
 }
 
-// createShortestPathViaEllipse ::
-function createShortestPathViaEllipse(matrix, sortingArea, locationsList, functionToApply) {
-  const pickerTourForEllipse = locationsListToMatrixData(startFromALocation(sortingArea, uniqLocations(locationsList)), functionToApply);
+// shortestPathViaEllipse ::
+function shortestPathViaEllipse(matrix, sortingArea, locationsList, functionToApply) {
+  // Transform picketTour into matrix data
+  const pickerTourForEllipse = locationsListToMatrixData(functionToApply, startFromALocation(sortingArea, R.uniq(locationsList)));
+  // Create the ellipse for the pickerTour
   const ellipse = createEllipse(pickerTourForEllipse);
+
+  // We need to remove the ellipse cardinal points from the picker tour
   const pickerTourWithoutCardinals = removeCardinalPoints(locationsListInCorner(ellipse, pickerTourForEllipse), ellipse);
 
   const matrixCorner1 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[0], ellipse[1], pickerTourWithoutCardinals[0]);
@@ -156,3 +163,5 @@ function createShortestPathViaEllipse(matrix, sortingArea, locationsList, functi
 
   return locList;
 }
+
+exports.shortestPathViaEllipse = shortestPathViaEllipse;
