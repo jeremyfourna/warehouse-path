@@ -7,6 +7,7 @@ const {
   pathBtwTwoLocations
 } = require('../picker-tour');
 const { shortestPathBetweenLocations } = require('./closestNeighbour');
+const { concat } = require('../utils');
 
 // createEllipse :: [Array] -> [Array]
 function createEllipse(locationsCoordinates) {
@@ -154,8 +155,8 @@ function removeCardinalPoints(listOfLocationsByCardinalPoints, ellipseData) {
 }
 
 
-// createMatrixWithShortestPathBetweenCornerLocations :: warehouseMatrix -> [Number, Number] -> [Number, Number] -> [Array] -> Object
-function createMatrixWithShortestPathBetweenCornerLocations(matrix, startLocation, endLocation, cornerLocations) {
+// matrixWithShortestPathBtwCornerLocations :: warehouseMatrix -> [Number, Number] -> [Number, Number] -> [Array] -> Object
+function matrixWithShortestPathBtwCornerLocations(matrix, startLocation, endLocation, cornerLocations) {
   let newCornerLocations = endAtALocation(endLocation, startFromALocation(startLocation, cornerLocations));
   let ref = [];
   let shortestMatrix = [];
@@ -196,22 +197,42 @@ function shortestPathViaEllipse(matrix, sortingArea, locationsList, functionToAp
   // We need to remove the ellipse cardinal points from the picker tour
   const pickerTourWithoutCardinals = removeCardinalPoints(locationsListInCorner(ellipse, pickerTourForEllipse), ellipse);
 
-  const matrixCorner1 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[0], ellipse[1], pickerTourWithoutCardinals[0]);
-  const matrixCorner2 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[1], ellipse[2], pickerTourWithoutCardinals[1]);
-  const matrixCorner3 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[2], ellipse[3], pickerTourWithoutCardinals[2]);
-  const matrixCorner4 = createMatrixWithShortestPathBetweenCornerLocations(matrix, ellipse[3], ellipse[0], pickerTourWithoutCardinals[3]);
+  const matrixCorner1 = matrixWithShortestPathBtwCornerLocations(
+    matrix,
+    R.head(ellipse),
+    R.nth(1, ellipse),
+    R.head(pickerTourWithoutCardinals)
+  );
+  const matrixCorner2 = matrixWithShortestPathBtwCornerLocations(
+    matrix,
+    R.nth(1, ellipse),
+    R.nth(2, ellipse),
+    R.nth(1, pickerTourWithoutCardinals)
+  );
+  const matrixCorner3 = matrixWithShortestPathBtwCornerLocations(
+    matrix,
+    R.nth(2, ellipse),
+    R.nth(3, ellipse),
+    R.nth(2, pickerTourWithoutCardinals)
+  );
+  const matrixCorner4 = matrixWithShortestPathBtwCornerLocations(
+    matrix,
+    R.nth(3, ellipse),
+    R.head(ellipse),
+    R.nth(3, pickerTourWithoutCardinals)
+  );
 
   const shortestPathMatrixCorner1 = shortestPathBetweenLocations(matrixCorner1, ellipse[0].toString());
   const shortestPathMatrixCorner2 = shortestPathBetweenLocations(matrixCorner2, ellipse[1].toString());
   const shortestPathMatrixCorner3 = shortestPathBetweenLocations(matrixCorner3, ellipse[2].toString());
   const shortestPathMatrixCorner4 = shortestPathBetweenLocations(matrixCorner4, ellipse[3].toString());
 
-  const finalpath = R.uniq(shortestPathMatrixCorner1.concat(shortestPathMatrixCorner2, shortestPathMatrixCorner3, shortestPathMatrixCorner4));
+  const finalpath = R.uniq(concat([shortestPathMatrixCorner1, shortestPathMatrixCorner2, shortestPathMatrixCorner3, shortestPathMatrixCorner4]));
 
-  let locList = finalpath.map(function(cur) {
-    let newCur = cur.split(',');
+  let locList = R.map(cur => {
+    const newCur = R.split(',', cur);
     return [newCur[0], newCur[1]];
-  });
+  }, finalpath);
 
   locList = endAtALocation(locList[0], locList);
 

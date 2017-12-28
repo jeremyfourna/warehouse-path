@@ -1,6 +1,8 @@
 const R = require('ramda');
 const PF = require('pathfinding');
 
+const { mapIndexed } = require('./utils');
+
 //////////////////////////////////////////////////
 // Transform origin picker tour to matrix data //
 ////////////////////////////////////////////////
@@ -68,8 +70,6 @@ function pathBtwTwoLocations(matrix, origin, destination) {
 // matrixWithShortestPathBtwLocations :: warehouseMatrix [String] Function -> Object
 function matrixWithShortestPathBtwLocations(matrix, pickerTour, functionToApply) {
   // pickerTour should also contain the point of origin/return
-  const mapIndexed = R.addIndex(R.map);
-
   const ref = mapIndexed((cur, index) => {
     return {
       name: cur,

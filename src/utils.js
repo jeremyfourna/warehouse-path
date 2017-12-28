@@ -11,5 +11,13 @@ function nbSteps(pickerTour) {
   }, 0, pickerTour);
 }
 
+function concat(listOfArrays) {
+  return R.reduce((prev, cur) => R.concat(prev, cur), [], listOfArrays);
+}
+
+const mapIndexed = R.addIndex(R.map);
+
 exports.isNaN = isNaN;
 exports.nbSteps = nbSteps;
+exports.concat = concat;
+exports.mapIndexed = mapIndexed;
