@@ -44,8 +44,6 @@ function testLocationToMatrixData(location) {
 }
 
 
-
-
 console.log('S Shaped', nbSteps(shortestSShapedPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
 console.log('Closest Neighbour', nbSteps(shortestClosestNeighbourPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
 console.log('Ellipse', nbSteps(shortestPathViaEllipse(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
