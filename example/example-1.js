@@ -18,7 +18,7 @@ const matrix = warehouseMatrix(44, 36, [10]);
 // Define your picker tour via your locations //
 ///////////////////////////////////////////////
 
-const pickerTour = ['MZ1-0115A03', 'MZ1-0122A01', 'MZ1-0332A03', 'MZ1-2531A03', 'MZ1-2813D05', 'MZ1-2816D04', 'MZ1-2913D05', 'MZ1-3019D01', 'MZ1-3334A02', 'MZ1-3341A02', 'MZ1-3517A03', 'MZ1-3529A01'];
+const pickerTour = ['MZ1-0115A03', 'MZ1-0122A01', 'MZ1-0332A03', 'MZ1-2531A03', 'MZ1-2813D05', 'MZ1-2816D04', 'MZ1-2913D05', 'MZ1-3019D01', 'MZ1-3334A02', 'MZ1-3341A02', 'MZ1-3517A03', 'MZ1-3529A01', 'MZ1-3227A02', 'MZ1-0715A01'];
 
 ///////////////////////////////////////////////
 // Define your starting and/or ending point //
@@ -48,4 +48,4 @@ function testLocationToMatrixData(location) {
 
 console.log('S Shaped', nbSteps(shortestSShapedPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
 console.log('Closest Neighbour', nbSteps(shortestClosestNeighbourPath(matrix, sortingArea, pickerTour, testLocationToMatrixData)));
-console.log('Ellipse', shortestPathViaEllipse(matrix, sortingArea, pickerTour, testLocationToMatrixData));
+console.log('Ellipse', nbSteps(shortestPathViaEllipse(matrix, sortingArea, pickerTour, testLocationToMatrixData)));

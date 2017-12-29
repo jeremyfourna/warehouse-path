@@ -4,7 +4,8 @@ const {
   endAtALocation,
   locationsListToMatrixData,
   startFromALocation,
-  pathBtwTwoLocations
+  pathBtwTwoLocations,
+  pathBtwManyLocations
 } = require('../picker-tour');
 const { shortestPathBetweenLocations } = require('./closestNeighbour');
 const { concat } = require('../utils');
@@ -236,7 +237,11 @@ function shortestPathViaEllipse(matrix, sortingArea, locationsList, functionToAp
 
   locList = endAtALocation(locList[0], locList);
 
-  return locList;
+  const newLocList = R.map(cur => {
+    return [Number(R.head(cur)), Number(R.last(cur))]
+  }, locList);
+
+  return pathBtwManyLocations(matrix, newLocList);
 }
 
 exports.shortestPathViaEllipse = shortestPathViaEllipse;
