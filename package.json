@@ -25,7 +25,9 @@
   "homepage": "https://github.com/jeremyfourna/warehouse-path#readme",
   "dependencies": {
     "pathfinding": "^0.4.18",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "warehouse-algos-sshaped": "^0.1.0",
+    "warehouse-picker-tour": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^4.0.1",

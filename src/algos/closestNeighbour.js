@@ -5,7 +5,7 @@ const {
   matrixWithShortestPathBtwLocations,
   pathBtwManyLocations,
   startAndEndAtSameALocation
-} = require('../picker-tour');
+} = require('warehouse-picker-tour');
 
 // shortestPathBetweenLocations :: Object -> String -> [String]
 function shortestPathBetweenLocations(mWSPBL, startingPoint) {

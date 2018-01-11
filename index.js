@@ -1,6 +1,6 @@
 const { warehouseMatrix } = require('./src/warehouse');
 const { nbSteps } = require('./src/utils');
-const { shortestSShapedPath } = require('./src/algos/sShapedLocations');
+const { shortestSShapedPath } = require('warehouse-algos-sshaped');
 const { shortestClosestNeighbourPath } = require('./src/algos/closestNeighbour');
 const { shortestPathViaEllipse } = require('./src/algos/ellipse');
 

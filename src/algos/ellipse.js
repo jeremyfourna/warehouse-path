@@ -6,7 +6,7 @@ const {
   startFromALocation,
   pathBtwTwoLocations,
   pathBtwManyLocations
-} = require('../picker-tour');
+} = require('warehouse-picker-tour');
 const { shortestPathBetweenLocations } = require('./closestNeighbour');
 const { concat } = require('../utils');
 
