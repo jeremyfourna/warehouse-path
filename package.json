@@ -15,7 +15,6 @@
     "warehouse",
     "pathfinding",
     "picker",
-    "pickerview",
     "traveling-salesman"
   ],
   "author": "Jeremy Fourna <jeremyfourna@gmail.com>",
