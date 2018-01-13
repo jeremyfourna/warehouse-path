@@ -1,6 +1,6 @@
 {
   "name": "warehouse-path",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Lib allowing you to compare routing algorithm performance for warehouse picker tour.",
   "main": "index.js",
   "scripts": {
